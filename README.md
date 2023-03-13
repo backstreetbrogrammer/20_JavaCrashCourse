@@ -190,7 +190,7 @@ int x5 = 0x_52; // Invalid: cannot put underscores at the beginning of a number
 int x6 = 0x5_2; // Valid
 ```
 
-###### Interview Problem 3 (CLSA): Compute the parity of a `long`.
+###### Interview Problem 3 (CLSA): Compute the parity of a `long` word (64-bits).
 
 The **parity** of a binary word (64-bit) is **1** if the number of 1s in the word is **odd**; otherwise, it is **0**.
 For example, the parity of 1011 is 1, and the parity of 10001000 is 0. Parity checks are used to detect single bit 
@@ -224,7 +224,6 @@ Slightly optimised solution:
     }
 ```
 
-
 ##### Statement and Expression
 
 What is a **statement** and an **expression** in Java?
@@ -239,7 +238,7 @@ those that assign a value to a variable and those that simply have a value.
 
 For example:
 
-```
+```java
 // this whole line is a statement
 System.out.print("Hello Students!!");
 
