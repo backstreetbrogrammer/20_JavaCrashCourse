@@ -72,7 +72,7 @@ Tools used:
 
 ##### Data Types: Primitives, String
 
-![Primitives in Java](Primitives.PNG)
+![Primitives in Java](PrimitivesDataTypes.PNG)
 
 The 8 primitive data types supported by the Java programming language are:
 
