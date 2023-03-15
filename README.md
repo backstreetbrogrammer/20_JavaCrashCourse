@@ -363,3 +363,24 @@ The `if-then-else` statement provides a secondary path of execution when an "if"
 
 ##### Methods
 
+A method is a block of code which only runs when it is called. We can pass data, known as parameters, into a method.
+Methods are used to perform certain actions, and they are also known as functions.
+
+Why use methods?
+
+To reuse code: define the code once, and use it many times.
+
+A method consists of six parts:
+
+- **Access modifier**: `public, protected, private, default (package-private) and static` => optionally we can specify
+  from wherein the code one can access the method
+- **Return type**: the type of the value returned by the method, if any => a method can return a primitive value or an
+  object reference, or it can return nothing if we use the `void` keyword as the return type
+- **Method identifier**: the name we give to the method
+- **Parameter list**: an optional comma-separated list of inputs for the method => can have anywhere from 0 to 255
+  parameters that are delimited by commas
+- **Exception list**: an optional list of exceptions the method can throw
+- **Body**: definition of the logic (can be empty)
+
+![Methods](Methods.PNG)
+
