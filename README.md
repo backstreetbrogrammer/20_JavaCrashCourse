@@ -19,7 +19,7 @@ Tools used:
     - Operators
     - Statements, Expressions and Code Blocks
     - Methods
-    - Control Flow (for, while loops)
+    - Control Flow
 3. Object-Oriented Programming
     - Classes, Objects, Interfaces, Abstract Classes
     - Inheritance - method overloading and overriding
@@ -133,7 +133,7 @@ Thus, we should be able to get a String of length whichever is **smaller**:
 
 2. Half of allotted maximum heap size (since each character is 2 bytes).
 
-###### Interview Problem 2: Using Underscore Characters in Numeric Literals
+###### Interview Problem 2 (Societe Generale): Using Underscore Characters in Numeric Literals
 
 In Java SE 7 and later, any number of underscore characters (_) can appear anywhere between digits in a numerical
 literal. This feature enables, for example, to separate groups of digits in numeric literals, which can improve the
@@ -285,7 +285,9 @@ errors in data storage and communications.
 
 **Solution**:
 
-```
+```java
+public class ComputeParity {
+
     // Time complexity: O(n) ~ n is 64-bit length, i.e. 64
     public static short parity(long word) {
         short result = 0;
@@ -295,11 +297,7 @@ errors in data storage and communications.
         }
         return result;
     }
-```
 
-Slightly optimised solution:
-
-```
     // Time complexity: O(k) ~ k is no of set bits (1) in word
     public static short parityOptimised(long word) {
         short result = 0;
@@ -309,6 +307,34 @@ Slightly optimised solution:
         }
         return result;
     }
+
+}
+```
+
+Unit Test:
+
+```java
+public class ComputeParityTest {
+
+    @Test
+    void testParity() {
+        final long[] nums = new long[]{5L, 8L, 17L, 999L, 1L};
+        for (final long num : nums) {
+            System.out.printf("Num=[%d], Binary=[%s], [Parity=%d]%n", num, Long.toBinaryString(num),
+                              ComputeParity.parityOptimised(num));
+        }
+    }
+}
+```
+
+Output:
+
+```
+Num=[5], Binary=[101], [Parity=0]
+Num=[8], Binary=[1000], [Parity=1]
+Num=[17], Binary=[10001], [Parity=0]
+Num=[999], Binary=[1111100111], [Parity=0]
+Num=[1], Binary=[1], [Parity=1]
 ```
 
 ##### Statements, Expressions and Code Blocks
@@ -366,6 +392,9 @@ The `if-then-else` statement provides a secondary path of execution when an "if"
 A method is a block of code which only runs when it is called. We can pass data, known as parameters, into a method.
 Methods are used to perform certain actions, and they are also known as functions.
 
+**Parameter** is the definition as shown in the method declaration, and the **argument** is the value that is passed to
+the method when we call it.
+
 Why use methods?
 
 To reuse code: define the code once, and use it many times.
@@ -384,3 +413,143 @@ A method consists of six parts:
 
 ![Methods](Methods.PNG)
 
+###### Method Overloading
+
+Method Overloading allows different methods to have the same name, but different signatures where the signature can
+differ by the number of input parameters or type of input parameters, or a mixture of both.
+
+Method overloading is also known as Compile-time Polymorphism, Static Polymorphism, or Early binding in Java.
+
+Different Ways of Method Overloading in Java:
+
+- Changing the Number of Parameters.
+- Changing Data Types of the Arguments.
+- Changing the Order of the Parameters of Methods
+
+##### Control Flow
+
+The statements inside our source files are generally executed from top to bottom, in the order that they appear. Control
+flow statements, however, break up the flow of execution by employing decision-making statements (`if-then`,
+`if-then-else`, `switch`), looping statements (`for`, `while`, `do-while`), and branching statements (`break`,
+`continue`, `return`), enabling our program to conditionally execute particular blocks of code.
+
+###### The `switch` statement
+
+The `switch` statement is a multi-way branch statement. In simple words, the `switch` statement executes one statement
+from multiple conditions. It is like an `if-else-if` ladder statement. It provides an easy way to dispatch execution to
+different parts of code based on the value of the expression. It basically tests the equality of variables against
+multiple values.
+
+![switch statement](switch.PNG)
+
+A `switch` works with the `byte`, `short`, `char`, and `int` primitive data types. It also works with enumerated types
+(`Enum` Types), the `String` class, and Wrapper classes: `Character`, `Byte`, `Short`, and `Integer`.
+
+Some important rules for `switch` statements:
+
+- There can be any number of cases just imposing condition check but remember duplicate case/s values are not allowed.
+- The value for a case must be of the same data type as the variable in the switch.
+- The value for a case must be constant or literal. **Variables** are not allowed.
+- The `break` statement is used inside the switch to terminate a statement sequence.
+- The `break` statement is optional. If omitted, execution will continue on into the next case.
+- The `default` statement is optional and can appear anywhere inside the switch block. In case, if it is not at the end,
+  then a break statement must be kept after the default statement to omit the execution of the next case statement.
+
+###### The `for` statement
+
+Loops in Java come into use when we need to repeatedly execute a block of statements.
+
+The `for` statement provides a compact way to iterate over a range of values. Programmers often refer to it as the "for
+loop" because of the way in which it repeatedly loops until a particular condition is satisfied.
+
+The general form of the `for` statement can be expressed as follows:
+
+![for loop](forLoop.PNG)
+
+When using this version of the for statement, keep in mind that:
+
+- The initialization expression initializes the loop; it's executed once, as the loop begins.
+- When the termination expression evaluates to `false`, the loop terminates.
+- The increment expression is invoked after each iteration through the loop; it is perfectly acceptable for this
+  expression to increment or decrement a value.
+
+The `for` statement also has another form designed for iteration through `Collections` and `arrays`. This form is
+sometimes referred to as the `enhanced for statement`, and can be used to make our loops more compact and easy to read.
+
+Syntax:
+
+![enhanced for](enhancedFor.PNG)
+
+###### The `while` and `do-while` statements
+
+The `while` statement continually executes a block of statements while a particular condition is `true`. Its syntax can
+be expressed as:
+
+```
+while (expression) { 
+    statement(s)
+} 
+```
+
+The `while` statement evaluates expression, which must return a boolean value. If the expression evaluates to `true`,
+the `while` statement executes the statement(s) in the `while` block. The `while` statement continues testing the
+expression and executing its block until the expression evaluates to `false`.
+
+The Java programming language also provides a `do-while` statement, which can be expressed as follows:
+
+```
+do { 
+   statement(s)
+} while (expression);
+```
+
+The difference between `do-while` and `while` is that `do-while` evaluates its expression at the bottom of the loop
+instead of the top. Therefore, the statements within the `do block` are always executed **at least once**.
+
+###### Interview Problem 4 (Merrill Lynch): Reverse Digits
+
+Write a program which takes an integer and returns the integer corresponding to the digits of the input written in
+reverse order. For example, the reverse of 1234 is 4321, and the reverse of -975 is -579.
+
+```java
+public class ReverseDigits {
+
+    public static long reverse(final int num) {
+        final boolean isNegative = num < 0;
+        long result = 0L;
+        long remaining = Math.abs(num);
+        while (remaining != 0) {
+            result = (result * 10) + (remaining % 10);
+            remaining /= 10;
+        }
+
+        return isNegative ? -result : result;
+    }
+
+}
+```
+
+Unit Test:
+
+```java
+public class ReverseDigitsTest {
+
+    @Test
+    void testReverse() {
+        final int[] nums = new int[]{1234, -975, 5436, 87580, -1};
+        for (final int num : nums) {
+            System.out.printf("Reverse of %d is %d%n", num, ReverseDigits.reverse(num));
+        }
+    }
+}
+```
+
+Output:
+
+```
+Reverse of 1234 is 4321
+Reverse of -975 is -579
+Reverse of 5436 is 6345
+Reverse of 87580 is 8578
+Reverse of -1 is -1
+```
