@@ -2,6 +2,11 @@ package com.backstreetbrogrammer.module1_javaFundamentalsRecap.ch01_javaFundamen
 
 public class ComputeParity {
 
+    public static short parityUsingApi(final long word) {
+        final int bitCount = Long.bitCount(word);
+        return (short) ((bitCount % 2 == 0) ? 0 : 1);
+    }
+
     // Time complexity: O(n) ~ n is 64-bit length, i.e. 64
     public static short parity(long word) {
         short result = 0;

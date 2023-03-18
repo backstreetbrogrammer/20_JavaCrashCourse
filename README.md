@@ -126,66 +126,12 @@ to think of it as such.
 
 Thus, we should be able to get a String of length whichever is **smaller**:
 
-1. Integer.MAX_VALUE always 2,147,483,647 (231 - 1)
+1. Integer.MAX_VALUE always 2,147,483,647 (2^31 - 1)
    (Defined by the Java specification, the maximum size of an array, which the String class uses for internal storage)
 
 **OR**
 
 2. Half of allotted maximum heap size (since each character is 2 bytes).
-
-###### Interview Problem 2 (Societe Generale): Using Underscore Characters in Numeric Literals
-
-In Java SE 7 and later, any number of underscore characters (_) can appear anywhere between digits in a numerical
-literal. This feature enables, for example, to separate groups of digits in numeric literals, which can improve the
-readability of our code.
-
-For ex:
-
-```
-long creditCardNumber = 1234_5678_9012_3456L;
-float pi = 3.14_15F;
-byte nybbles = 0b0010_0101;
-```
-
-Which of the following are **valid** and **invalid** underscore placements in numeric literals:
-
-```
-float pi1 = 3_.1415F;
-
-int x1 = 5_2;
-
-float pi2 = 3._1415F;
-
-long socialSecurityNumber1 = 999_99_9999_L;
-
-int x2 = 52_;
-
-int x3 = 5_______2;
-
-int x5 = 0x_52;
-
-int x6 = 0x5_2;
-```
-
-**Solution**:
-
-```
-float pi1 = 3_.1415F; // Invalid: cannot put underscores adjacent to a decimal point
-
-int x1 = 5_2; // Valid
-
-float pi2 = 3._1415F; // Invalid: cannot put underscores adjacent to a decimal point
-
-long socialSecurityNumber1 = 999_99_9999_L; // Invalid: cannot put underscores prior to an L suffix
-
-int x2 = 52_; // Invalid: cannot put underscores at the end of a literal
-
-int x3 = 5_______2; // Valid
-
-int x5 = 0x_52; // Invalid: cannot put underscores at the beginning of a number 
-
-int x6 = 0x5_2; // Valid
-```
 
 ##### Operators
 
@@ -277,7 +223,7 @@ One of the most important things to consider is **operators precedence** used fo
 
 Best practice is to use parenthesis `()` to change the precedence and make the code more readable.
 
-###### Interview Problem 3 (CLSA): Compute the parity of a `long` word (64-bits).
+###### Interview Problem 2 (CLSA): Compute the parity of a `long` word (64-bits).
 
 The **parity** of a binary word (64-bit) is **1** if the number of 1s in the word is **odd**; otherwise, it is **0**.
 For example, the parity of 1011 is 1, and the parity of 10001000 is 0. Parity checks are used to detect single bit
@@ -287,6 +233,11 @@ errors in data storage and communications.
 
 ```java
 public class ComputeParity {
+
+    public static short parityUsingApi(final long word) {
+        final int bitCount = Long.bitCount(word);
+        return (short) ((bitCount % 2 == 0) ? 0 : 1);
+    }
 
     // Time complexity: O(n) ~ n is 64-bit length, i.e. 64
     public static short parity(long word) {
@@ -311,30 +262,38 @@ public class ComputeParity {
 }
 ```
 
-Unit Test:
+**Unit Test**:
 
 ```java
+import org.junit.jupiter.api.Test;
+
 public class ComputeParityTest {
 
     @Test
     void testParity() {
-        final long[] nums = new long[]{5L, 8L, 17L, 999L, 1L};
+        final long[] nums = new long[]{5L, -8L, 17L, 999L, 1L};
         for (final long num : nums) {
-            System.out.printf("Num=[%d], Binary=[%s], [Parity=%d]%n", num, Long.toBinaryString(num),
+            System.out.printf("Num=[%d], Binary=[%s], BitCount=[%d], [parityUsingApi=%d], [parity=%d], [parityOptimised=%d]%n",
+                              num,
+                              Long.toBinaryString(num),
+                              Long.bitCount(num),
+                              ComputeParity.parityUsingApi(num),
+                              ComputeParity.parity(num),
                               ComputeParity.parityOptimised(num));
         }
     }
+
 }
 ```
 
-Output:
+**Output**:
 
 ```
-Num=[5], Binary=[101], [Parity=0]
-Num=[8], Binary=[1000], [Parity=1]
-Num=[17], Binary=[10001], [Parity=0]
-Num=[999], Binary=[1111100111], [Parity=0]
-Num=[1], Binary=[1], [Parity=1]
+Num=[5], Binary=[101], BitCount=[2], [parityUsingApi=0], [parity=0], [parityOptimised=0]
+Num=[-8], Binary=[1111111111111111111111111111111111111111111111111111111111111000], BitCount=[61], [parityUsingApi=1], [parity=1], [parityOptimised=1]
+Num=[17], Binary=[10001], BitCount=[2], [parityUsingApi=0], [parity=0], [parityOptimised=0]
+Num=[999], Binary=[1111100111], BitCount=[8], [parityUsingApi=0], [parity=0], [parityOptimised=0]
+Num=[1], Binary=[1], BitCount=[1], [parityUsingApi=1], [parity=1], [parityOptimised=1]
 ```
 
 ##### Statements, Expressions and Code Blocks
@@ -377,6 +336,19 @@ These are:
 - **Statement**: Statements are stand-alone units of work
 - **Code Blocks**: A code block is a set of zero, one, or more statements, usually grouped together in some way to
   achieve a single goal
+
+**Local Variable**: available for use by the code block in which it is declared. It is also available to code blocks
+that are contained by a declaring block.
+
+**Scope**: describes the accessibility of a variable:
+
+- "In scope" means the variable can be used in the code block
+- "Out of scope" means the variable is no longer avaiable in the code block
+
+**Best practice**:
+
+- declare and initialize variables in the same place if possible
+- declare variables in the narrowest scope possible
 
 ###### The if-then and if-then-else Statements
 
@@ -425,6 +397,30 @@ Different Ways of Method Overloading in Java:
 - Changing the Number of Parameters.
 - Changing Data Types of the Arguments.
 - Changing the Order of the Parameters of Methods
+
+###### Exceptions and Errors
+
+**Exception** is an unwanted or unexpected event, which occurs during the execution of a program, i.e. at run time, that
+disrupts the normal flow of the program’s instructions. Exceptions can be caught and handled by the program. When an
+exception occurs within a method, it creates an object. This object is called the exception object. It contains
+information about the exception, such as the name and description of the exception and the state of the program when the
+exception occurred.
+
+There are 2 types of built-in Exceptions:
+
+- **Checked Exceptions**: Checked exceptions are called compile-time exceptions because these exceptions are checked at
+  compile-time by the compiler.
+- **Unchecked Exceptions**: The unchecked exceptions are just opposite to the checked exceptions. The compiler will not
+  check these exceptions at compile time. In simple words, if a program throws an unchecked exception, and even if we
+  did not handle or declare it, the program would not give a compilation error.
+
+**Errors** represent irrecoverable conditions such as Java virtual machine (JVM) running out of memory, memory leaks,
+stack overflow errors, library incompatibility, infinite recursion, etc. Errors are usually beyond the control of the
+programmer, and we should not try to handle errors.
+
+Use **try-catch-finally** to handle Exceptions:
+
+![try-catch-finally](tryCatch.PNG)
 
 ##### Control Flow
 
@@ -506,13 +502,24 @@ do {
 The difference between `do-while` and `while` is that `do-while` evaluates its expression at the bottom of the loop
 instead of the top. Therefore, the statements within the `do block` are always executed **at least once**.
 
-###### Interview Problem 4 (Merrill Lynch): Reverse Digits
+###### Interview Problem 3 (Merrill Lynch): Reverse Digits
 
 Write a program which takes an integer and returns the integer corresponding to the digits of the input written in
 reverse order. For example, the reverse of 1234 is 4321, and the reverse of -975 is -579.
 
+**Solution**:
+
 ```java
 public class ReverseDigits {
+
+    public static long reverseUsingApi(final int num) {
+        final boolean isNegative = num < 0;
+        final long remaining = Math.abs(num);
+        final var builder = new StringBuilder(String.valueOf(remaining));
+        builder.reverse();
+        final var result = Long.parseLong(builder.toString());
+        return isNegative ? -result : result;
+    }
 
     public static long reverse(final int num) {
         final boolean isNegative = num < 0;
@@ -529,27 +536,196 @@ public class ReverseDigits {
 }
 ```
 
-Unit Test:
+**Unit Test**:
 
 ```java
+import org.junit.jupiter.api.Test;
+
 public class ReverseDigitsTest {
 
     @Test
     void testReverse() {
         final int[] nums = new int[]{1234, -975, 5436, 87580, -1};
         for (final int num : nums) {
-            System.out.printf("Reverse of %d is %d%n", num, ReverseDigits.reverse(num));
+            System.out.printf("Num=[%d], reverseUsingApi=[%d], reverse=[%d]%n",
+                              num,
+                              ReverseDigits.reverseUsingApi(num),
+                              ReverseDigits.reverse(num));
         }
     }
+
 }
 ```
 
-Output:
+**Output**:
 
 ```
-Reverse of 1234 is 4321
-Reverse of -975 is -579
-Reverse of 5436 is 6345
-Reverse of 87580 is 8578
-Reverse of -1 is -1
+Num=[1234], reverseUsingApi=[4321], reverse=[4321]
+Num=[-975], reverseUsingApi=[-579], reverse=[-579]
+Num=[5436], reverseUsingApi=[6345], reverse=[6345]
+Num=[87580], reverseUsingApi=[8578], reverse=[8578]
+Num=[-1], reverseUsingApi=[-1], reverse=[-1]
 ```
+
+###### Interview Problem 4 (Goldman Sachs): Check if a decimal integer is palindrome
+
+A palindromic String is one which reads the same forwards and backwards, e.g. civic, radar, level, rotor, kayak,
+reviver, madam.
+
+Write a program which determines if an integer is palindrome. For ex: 1, 6, 11, 121, 333, 2147412 should return `true`,
+and, -1, 12, 100, 2147483647 should return `false`. (any negative number is never a palindrome)
+
+**Solution**:
+
+```java
+public class IsPalindromeNumber {
+
+    public static boolean isPalindromeNumber(int num) {
+        if (num < 0) return false;
+        else if (num == 0) return true;
+
+        // no of digits in a number
+        // ex: 1234 = log10(1234) + 1 => (int) 3.091 + 1 => 4
+        final int numDigits = (int) (Math.floor(Math.log10(num))) + 1;
+
+        // most significant digit = num / (10^numDigits-1)
+        // ex: 1234 / 1000 => (int) 1.234 => 1
+        int msdMask = (int) Math.pow(10, numDigits - 1);
+
+        // least significant digit = num % 10
+        // ex: 1234 % 10 => 4
+        for (int i = 0; i < (numDigits / 2); ++i) {
+            if ((num / msdMask) != (num % 10)) { // compare msd with lsd
+                return false;
+            }
+            num %= msdMask; // remove the most significant digit of num
+            num /= 10; // remove the least significant digit of num
+            msdMask /= 100; // as 2 digits are removed
+        }
+
+        return true;
+    }
+
+}
+```
+
+**Unit Test**:
+
+```java
+import org.junit.jupiter.api.Test;
+
+public class IsPalindromeNumberTest {
+
+    @Test
+    void testPalindromeNumber() {
+        final int[] nums = new int[]{1, 6, 11, 121, 333, 2147412, -1, 12, 100, 2147483647};
+        for (final int num : nums) {
+            System.out.printf("Num=[%d], isPalindrome=[%b]%n", num, IsPalindromeNumber.isPalindromeNumber(num));
+        }
+    }
+
+}
+```
+
+**Output**:
+
+```
+Num=[1], isPalindrome=[true]
+Num=[6], isPalindrome=[true]
+Num=[11], isPalindrome=[true]
+Num=[121], isPalindrome=[true]
+Num=[333], isPalindrome=[true]
+Num=[2147412], isPalindrome=[true]
+Num=[-1], isPalindrome=[false]
+Num=[12], isPalindrome=[false]
+Num=[100], isPalindrome=[false]
+Num=[2147483647], isPalindrome=[false]
+```
+
+###### Interview Problem 5 (Merrill Lynch): Compute `x` to the power `y`
+
+Write a program that takes double `x` and an integer `y` and returns `x` to the power `y` => `x.pow(y)`.
+
+**Solution**:
+
+```java
+public class Power {
+
+    public static double powerUsingApi(final double x, final int y) {
+        return Math.pow(x, y);
+    }
+
+    public static double power(double x, final int y) {
+        double result = 1D;
+        long pow = y;
+
+        // when y is negative => replace x by 1/x and y with -y
+        if (y < 0) {
+            pow = -pow;
+            x = 1D / x;
+        }
+
+        // when y is a power of 2 => can replace (x^2)^2, ....
+        // thus, if the LSB of y is 0 => result is (x^(y/2))^2; otherwise it is (x * (x^(y/2))^2)
+        while (pow != 0) {
+            if ((pow & 1) != 0) { // LSB of y is not 0
+                result *= x;
+            }
+            x *= x;
+            pow >>>= 1; // right shift with 0, or it's equivalent to y/2
+        }
+
+        return result;
+    }
+
+}
+```
+
+**Unit Test**:
+
+```java
+import org.junit.jupiter.api.Test;
+
+public class PowerTest {
+
+    @Test
+    void testPower() {
+        final double[] nums = new double[]{2D, -3D, 1.1D};
+        final int[] pows = new int[]{-3, 0, 1, 2, 3};
+        for (final double x : nums) {
+            for (final int y : pows) {
+                System.out.printf("x=[%.2f], y=[%d], x.powerUsingApi(y)=[%.2f], x.power(y)=[%.2f]%n",
+                                  x, y, Power.powerUsingApi(x, y), Power.power(x, y));
+            }
+            System.out.println();
+        }
+    }
+
+}
+```
+
+**Output**:
+
+```
+x=[2.00], y=[-3], x.powerUsingApi(y)=[0.13], x.power(y)=[0.13]
+x=[2.00], y=[0], x.powerUsingApi(y)=[1.00], x.power(y)=[1.00]
+x=[2.00], y=[1], x.powerUsingApi(y)=[2.00], x.power(y)=[2.00]
+x=[2.00], y=[2], x.powerUsingApi(y)=[4.00], x.power(y)=[4.00]
+x=[2.00], y=[3], x.powerUsingApi(y)=[8.00], x.power(y)=[8.00]
+
+x=[-3.00], y=[-3], x.powerUsingApi(y)=[-0.04], x.power(y)=[-0.04]
+x=[-3.00], y=[0], x.powerUsingApi(y)=[1.00], x.power(y)=[1.00]
+x=[-3.00], y=[1], x.powerUsingApi(y)=[-3.00], x.power(y)=[-3.00]
+x=[-3.00], y=[2], x.powerUsingApi(y)=[9.00], x.power(y)=[9.00]
+x=[-3.00], y=[3], x.powerUsingApi(y)=[-27.00], x.power(y)=[-27.00]
+
+x=[1.10], y=[-3], x.powerUsingApi(y)=[0.75], x.power(y)=[0.75]
+x=[1.10], y=[0], x.powerUsingApi(y)=[1.00], x.power(y)=[1.00]
+x=[1.10], y=[1], x.powerUsingApi(y)=[1.10], x.power(y)=[1.10]
+x=[1.10], y=[2], x.powerUsingApi(y)=[1.21], x.power(y)=[1.21]
+x=[1.10], y=[3], x.powerUsingApi(y)=[1.33], x.power(y)=[1.33]
+```
+
+---
+
+#### Chapter 02. Object-Oriented Programming

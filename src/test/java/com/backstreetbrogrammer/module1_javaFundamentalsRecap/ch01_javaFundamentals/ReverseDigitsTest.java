@@ -8,7 +8,11 @@ public class ReverseDigitsTest {
     void testReverse() {
         final int[] nums = new int[]{1234, -975, 5436, 87580, -1};
         for (final int num : nums) {
-            System.out.printf("Reverse of %d is %d%n", num, ReverseDigits.reverse(num));
+            System.out.printf("Num=[%d], reverseUsingApi=[%d], reverse=[%d]%n",
+                              num,
+                              ReverseDigits.reverseUsingApi(num),
+                              ReverseDigits.reverse(num));
         }
     }
+
 }
