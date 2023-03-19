@@ -6,10 +6,10 @@ public class PowerTest {
 
     @Test
     void testPower() {
-        final double[] nums = new double[]{2D, -3D, 1.1D};
-        final int[] pows = new int[]{-3, 0, 1, 2, 3};
-        for (final double x : nums) {
-            for (final int y : pows) {
+        final var nums = new double[]{2D, -3D, 1.1D};
+        final var pows = new int[]{-3, 0, 1, 2, 3};
+        for (final var x : nums) {
+            for (final var y : pows) {
                 System.out.printf("x=[%.2f], y=[%d], x.powerUsingApi(y)=[%.2f], x.power(y)=[%.2f]%n",
                                   x, y, Power.powerUsingApi(x, y), Power.power(x, y));
             }

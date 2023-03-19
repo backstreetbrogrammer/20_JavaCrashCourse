@@ -3,7 +3,7 @@ package com.backstreetbrogrammer.module1_javaFundamentalsRecap.ch01_javaFundamen
 public class ComputeParity {
 
     public static short parityUsingApi(final long word) {
-        final int bitCount = Long.bitCount(word);
+        final var bitCount = Long.bitCount(word);
         return (short) ((bitCount % 2 == 0) ? 0 : 1);
     }
 

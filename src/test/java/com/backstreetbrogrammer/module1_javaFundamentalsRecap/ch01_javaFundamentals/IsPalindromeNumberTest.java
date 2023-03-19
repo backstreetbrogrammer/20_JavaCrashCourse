@@ -6,8 +6,8 @@ public class IsPalindromeNumberTest {
 
     @Test
     void testPalindromeNumber() {
-        final int[] nums = new int[]{1, 6, 11, 121, 333, 2147412, -1, 12, 100, 2147483647};
-        for (final int num : nums) {
+        final var nums = new int[]{1, 6, 11, 121, 333, 2147412, -1, 12, 100, 2147483647};
+        for (final var num : nums) {
             System.out.printf("Num=[%d], isPalindrome=[%b]%n", num, IsPalindromeNumber.isPalindromeNumber(num));
         }
     }

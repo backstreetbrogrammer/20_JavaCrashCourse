@@ -235,7 +235,7 @@ errors in data storage and communications.
 public class ComputeParity {
 
     public static short parityUsingApi(final long word) {
-        final int bitCount = Long.bitCount(word);
+        final var bitCount = Long.bitCount(word);
         return (short) ((bitCount % 2 == 0) ? 0 : 1);
     }
 
@@ -271,8 +271,8 @@ public class ComputeParityTest {
 
     @Test
     void testParity() {
-        final long[] nums = new long[]{5L, -8L, 17L, 999L, 1L};
-        for (final long num : nums) {
+        final var nums = new long[]{5L, -8L, 17L, 999L, 1L};
+        for (final var num : nums) {
             System.out.printf("Num=[%d], Binary=[%s], BitCount=[%d], [parityUsingApi=%d], [parity=%d], [parityOptimised=%d]%n",
                               num,
                               Long.toBinaryString(num),
@@ -545,8 +545,8 @@ public class ReverseDigitsTest {
 
     @Test
     void testReverse() {
-        final int[] nums = new int[]{1234, -975, 5436, 87580, -1};
-        for (final int num : nums) {
+        final var nums = new int[]{1234, -975, 5436, 87580, -1};
+        for (final var num : nums) {
             System.out.printf("Num=[%d], reverseUsingApi=[%d], reverse=[%d]%n",
                               num,
                               ReverseDigits.reverseUsingApi(num),
@@ -618,8 +618,8 @@ public class IsPalindromeNumberTest {
 
     @Test
     void testPalindromeNumber() {
-        final int[] nums = new int[]{1, 6, 11, 121, 333, 2147412, -1, 12, 100, 2147483647};
-        for (final int num : nums) {
+        final var nums = new int[]{1, 6, 11, 121, 333, 2147412, -1, 12, 100, 2147483647};
+        for (final var num : nums) {
             System.out.printf("Num=[%d], isPalindrome=[%b]%n", num, IsPalindromeNumber.isPalindromeNumber(num));
         }
     }
@@ -690,10 +690,10 @@ public class PowerTest {
 
     @Test
     void testPower() {
-        final double[] nums = new double[]{2D, -3D, 1.1D};
-        final int[] pows = new int[]{-3, 0, 1, 2, 3};
-        for (final double x : nums) {
-            for (final int y : pows) {
+        final var nums = new double[]{2D, -3D, 1.1D};
+        final var pows = new int[]{-3, 0, 1, 2, 3};
+        for (final var x : nums) {
+            for (final var y : pows) {
                 System.out.printf("x=[%.2f], y=[%d], x.powerUsingApi(y)=[%.2f], x.power(y)=[%.2f]%n",
                                   x, y, Power.powerUsingApi(x, y), Power.power(x, y));
             }
@@ -729,3 +729,235 @@ x=[1.10], y=[3], x.powerUsingApi(y)=[1.33], x.power(y)=[1.33]
 ---
 
 #### Chapter 02. Object-Oriented Programming
+
+**Object-Oriented Programming (OOP)** is a programming paradigm in computer science that relies on the concept of
+classes and objects. It is used to structure a software program into simple, reusable pieces of code blueprints (usually
+called classes), which are used to create individual instances of objects.
+
+![OOP concepts](oopConcepts.PNG)
+
+Building blocks of OOP:
+
+- **Class**: A class is a blueprint or prototype from which objects are created. In a nutshell, classes are essentially
+  user-defined data types. Classes are where we create a blueprint for the structure of methods and attributes.
+  Individual objects are instantiated from this blueprint. Classes contain fields for attributes and methods for
+  behaviors.
+- **Object**: Objects are instances of a class created with specific data. An object is a software bundle of related
+  state and behavior. Software objects are often used to model the real-world objects that we find in everyday life.
+- **Attributes**: Attributes are the information that is stored. Attributes are defined in the `Class` template. When
+  objects are instantiated, individual objects contain data stored in the Attributes field. The state of an object is
+  defined by the data in the object’s attributes fields.
+- **Methods**: Methods represent behaviors. Methods perform actions; methods might return information about an object or
+  update an object’s data. The method’s code is defined in the class definition. When individual objects are
+  instantiated, these objects can call the methods defined in the class.
+
+The four pillars of object-oriented programming are:
+
+- **Inheritance**: child classes inherit data and behaviors from the parent class
+- **Encapsulation**: containing information in an object, exposing only selected information
+- **Abstraction**: only exposing high-level public methods for accessing an object
+- **Polymorphism**: designing objects to share behaviors. Using inheritance, objects can override shared parent
+  behaviors with specific child behaviors. Polymorphism allows the same method to execute different behaviors in two
+  ways: method overriding and method overloading.
+
+Benefits of OOP for software engineering:
+
+- OOP models complex things as reproducible, simple structures
+- Reusable, OOP objects can be used across programs
+- Polymorphism allows for class-specific behavior
+- Easier to debug, classes often contain all applicable information to them
+- Securely protects sensitive information through encapsulation
+
+##### Classes and Objects
+
+A class in java can contain:
+
+- data member
+- constructor
+- method
+- nested class
+- interface
+
+A class example:
+
+![class example](classExample.PNG)
+
+###### Interview Problem 6 (JP Morgan Chase): Design an immutable class in Java
+
+Immutability is a characteristic of Java objects that makes them immutable to future changes once they have been
+initialized. Its internal state cannot be changed in any way.
+
+JDK itself has lots of immutable classes. Given is such a list of immutable classes in Java.
+
+- `java.lang.String`
+- Wrapper classes such as `Integer`, `Long`, `Double` etc
+- `java.math.BigInteger` and `java.math.BigDecimal`
+- Unmodifiable collections such as `Collections.singletonMap()`
+- java.lang.StackTraceElement
+- Java enums
+- java.util.Locale
+- java.util.UUID
+- Java 8 Date Time API – LocalDate, LocalTime etc.
+
+Design an immutable class in Java with an example.
+
+**Solution**:
+
+To create an immutable class in Java, we need to follow these general principles:
+
+- Do not allow subclasses to override methods. The easiest way is to declare the class as `final`. Final classes in Java
+  can not be extended.
+- Make all fields `final` and `private`. Fields declared `private` will not be accessible outside the class, and making
+  them `final` will ensure that we can not change them even accidentally.
+- Initialize all fields using a **constructor** method performing **deep copy**.
+- Do not provide **setter** methods. Setter methods are meant to change an object’s state, which we want to prevent
+  here.
+- Special attention to “immutable classes with mutable fields“. Always remember that member fields will be either
+  mutable or immutable. Values of immutable members (`primitives`, `wrapper classes`, `String` etc.) can be returned
+  safely from the getter methods. For mutable members (`POJO`, `collections` etc.), we must copy the content into a new
+  `Object` before returning from the **getter** method.
+
+```java
+import java.util.List;
+import java.util.Map;
+
+public final class ImmutableClass {
+
+    private final long id;
+    private final String name;
+    private final List<String> tokens;
+    private final Map<String, String> metadata;
+
+    public ImmutableClass(final long id, final String name, final List<String> tokens,
+                          final Map<String, String> metadata) {
+        this.id = id;
+        this.name = name;
+
+        // deep copy
+        this.tokens = List.copyOf(tokens);
+        this.metadata = Map.copyOf(metadata);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<String> getTokens() {
+        // clone
+        return List.copyOf(tokens);
+    }
+
+    public Map<String, String> getMetadata() {
+        // clone
+        return Map.copyOf(metadata);
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableClass{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", tokens=" + tokens +
+                ", metadata=" + metadata +
+                '}';
+    }
+
+}
+```
+
+**Unit Test**:
+
+```java
+import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class ImmutableClassTest {
+
+    @Test
+    void testImmutableClass() {
+        final List<String> list = new ArrayList<>();
+        list.add("tok1");
+        list.add("tok2");
+
+        final Map<String, String> map = new HashMap<>();
+        map.put("1", "first");
+        map.put("2", "second");
+
+        final ImmutableClass obj = new ImmutableClass(101L, "ABC", list, map);
+        System.out.println(obj);
+
+        list.add("tok3");
+        list.add("tok4");
+        // Remains unchanged due to deep copy in constructor
+        System.out.println(obj.getTokens());
+
+        map.put("3", "third");
+        map.put("4", "fourth");
+        // Remains unchanged due to deep copy in constructor
+        System.out.println(obj.getMetadata());
+    }
+
+}
+```
+
+**Output**:
+
+```
+ImmutableClass{id=101, name='ABC', tokens=[tok1, tok2], metadata={1=first, 2=second}}
+[tok1, tok2]
+{1=first, 2=second}
+```
+
+**Objects** are instances of a class created with specific data. An object consists of :
+
+- **State**: It is represented by attributes of an object. It also reflects the properties of an object.
+- **Behavior**: It is represented by the methods of an object. It also reflects the response of an object with other
+  objects.
+- **Identity**: It gives a unique name to an object and enables one object to interact with other objects.
+
+###### Interview Problem 7 (Barclays): How many ways to create an object of a class?
+
+When an object of a class is created, the class is said to be **instantiated**. All the instances share the attributes
+and the behavior of the class. But the values of those attributes, i.e. the state are unique for each object. A single
+class may have any number of instances or objects.
+
+How many ways are there to create an object of a class?
+
+**Solution**:
+
+There are 4 ways to create objects in Java. Strictly speaking there is only one way (by using `new` keyword), and the
+rest internally use `new` keyword.
+
+1. Using `new` keyword
+
+```
+MyObject object = new MyObject();
+```
+
+2. Using `Class.forName()`: only if the class has a public default constructor, we can create an object in this way.
+
+```
+MyObject object = (MyObject) Class.forName("com.backstreetbrogrammer.MyObject").newInstance();
+```
+
+3. Using `clone()`: only classes that implement the interface `Cloneable` can be cloned.
+
+```
+MyObject anotherObject = new MyObject(); 
+MyObject object = anotherObject.clone();
+```
+
+4. Using Object **deserialization**: creating an object from its **serialized** form.
+
+```
+ObjectInputStream inStream = new ObjectInputStream(anInputStream ); 
+MyObject object = (MyObject) inStream.readObject();
+```

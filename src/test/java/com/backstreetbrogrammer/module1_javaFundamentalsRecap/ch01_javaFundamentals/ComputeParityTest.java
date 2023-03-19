@@ -6,8 +6,8 @@ public class ComputeParityTest {
 
     @Test
     void testParity() {
-        final long[] nums = new long[]{5L, -8L, 17L, 999L, 1L};
-        for (final long num : nums) {
+        final var nums = new long[]{5L, -8L, 17L, 999L, 1L};
+        for (final var num : nums) {
             System.out.printf("Num=[%d], Binary=[%s], BitCount=[%d], [parityUsingApi=%d], [parity=%d], [parityOptimised=%d]%n",
                               num,
                               Long.toBinaryString(num),
