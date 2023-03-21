@@ -782,6 +782,54 @@ A class example:
 
 ![class example](classExample.PNG)
 
+**Static** variables vs **Instance** variables:
+
+- Instance variables (non-static fields) are unique to each instance of a class.
+- Class variables (static fields) are fields declared with the `static` modifier; there is exactly one copy of a class
+  variable, regardless of how many times the class has been instantiated.
+- To access the instance variable, we MUST create a new instance of the class. Static variables are accessible through
+  class reference, and do not require creating an object instance.
+
+In the context of class attributes, `static` has a different meaning. If we have a field like:
+
+```
+private static int sharedAttribute;
+```
+
+then, each and every instance of the class will share the same variable, so that if we change it in one instance, the
+change will reflect in all instances, created either before or after the change.
+
+There are cases where this behaviour is absolutely desirable:
+
+- Class constants: since they are constants, having all the classes access the same value will do no harm, because no
+  one can change that. They can save memory too, if we have a lot of instances of that class.
+- Variables that are intended to be shared, such as reference counters.
+
+Static variables are instantiated before our program starts and a static **method** can only access **static**
+attributes.
+
+**Static** methods vs **Instance** methods:
+
+Instance method are methods which require an object of its class to be created before it can be called. To invoke a
+instance method, we have to create an Object of the class in which the method is defined.
+
+Instance methods are stored in **heap** but the parameters (arguments passed to them) and their local variables and the
+value to be returned are allocated in **stack**. They can be called within the same class in which they reside or from
+the different classes defined either in the same package or other packages depending on the **access type** provided to
+the desired instance method.
+
+Instance methods can be **overridden** since they are resolved using **dynamic binding** at run time.
+
+Static methods are the methods that can be called **without** creating an object of class. They are referenced by the
+class name itself or reference to the Object of that class.
+
+Static methods are stored in heap as they are associated with the **class** in which they reside and not to the objects
+of that class. But their local variables and the passed argument(s) to them are stored in the **stack**.
+
+Static methods can **not** be **overridden**, since they are resolved using **static binding** by the compiler at
+compile time. However, we can have the same name methods declared `static` in both **superclass** and **subclass**, but
+it will be called **Method Hiding** as the derived class method will hide the base class method.
+
 ###### Interview Problem 6 (JP Morgan Chase): Design an immutable class in Java
 
 Immutability is a characteristic of Java objects that makes them immutable to future changes once they have been
@@ -793,11 +841,11 @@ JDK itself has lots of immutable classes. Given is such a list of immutable clas
 - Wrapper classes such as `Integer`, `Long`, `Double` etc
 - `java.math.BigInteger` and `java.math.BigDecimal`
 - Unmodifiable collections such as `Collections.singletonMap()`
-- java.lang.StackTraceElement
-- Java enums
-- java.util.Locale
-- java.util.UUID
-- Java 8 Date Time API – LocalDate, LocalTime etc.
+- `java.lang.StackTraceElement`
+- Java **enums**
+- `java.util.Locale`
+- `java.util.UUID`
+- Java 8 Date Time API – `LocalDate`, `LocalTime` etc.
 
 Design an immutable class in Java with an example.
 
@@ -923,6 +971,35 @@ ImmutableClass{id=101, name='ABC', tokens=[tok1, tok2], metadata={1=first, 2=sec
   objects.
 - **Identity**: It gives a unique name to an object and enables one object to interact with other objects.
 
+**Constructor** is a special method that is used to initialize objects. The constructor is called when an object of a
+class is created. It can be used to set initial values for object attributes.
+
+At the time of calling the constructor, memory for the object is allocated in the memory. Every time an object is
+created using the `new` keyword, at least one constructor is called.
+
+It is not necessary to write a constructor for a class. It is because java compiler creates a default constructor
+(constructor with no-arguments) if our class does not have any.
+
+The first line of a constructor is a call to `super()` or `this()`, (a call to a constructor of a super-class or an
+overloaded constructor), if we don’t type in the call to `super()` in our constructor, the compiler will provide with a
+non-argument call to `super()` at the first line of our code.
+
+When an object is constructed using `new` (as opposed to being `deserialized`), following things happen in this
+sequence:
+
+1. All instance variables are assigned default values - like `int` as **0**, `double` as **0D**, `boolean` as **false**
+   , `String` as **null**, etc.
+
+2. The constructor is invoked, which immediately invokes the superclass constructor `super()` OR another overloaded
+   constructor `this()`, until one of the overloaded constructors invokes the superclass constructor.
+
+3. All superclass constructors complete.
+
+4. Instance variables that are initialized as part of their declaration are assigned their initial value overriding the
+   default values they’re given prior to the superclass constructors completing.
+
+5. The constructor completes.
+
 ###### Interview Problem 7 (Barclays): How many ways to create an object of a class?
 
 When an object of a class is created, the class is said to be **instantiated**. All the instances share the attributes
@@ -961,3 +1038,107 @@ MyObject object = anotherObject.clone();
 ObjectInputStream inStream = new ObjectInputStream(anInputStream ); 
 MyObject object = (MyObject) inStream.readObject();
 ```
+
+##### Inheritance
+
+One of the core principles of Object-Oriented Programming – inheritance – enables us to reuse existing code or extend an
+existing type.
+
+Simply put, a `class` can inherit another `class` and multiple `interfaces`, while an `interface` can inherit other
+`interfaces`.
+
+A child class inherits from parent class using `extends` keyword and use the keyword `implements` to inherit an
+interface.
+
+Classes in Java support **single** inheritance; the child class can't extend multiple classes. In the absence of
+an `extends` keyword, a class implicitly inherits class `java.lang.Object`.
+
+A subclass class inherits the **non-static** `protected` and `public` members from the superclass class. In addition,
+the members with **default** (`package-private`) access are inherited if the two classes are in the **same** package.
+
+On the other hand, the `private` and `static` members of a class are **not** inherited.
+
+Although classes can inherit only **one** `class`, they can implement **multiple** `interfaces`.
+
+Java allows **multiple** inheritance using interfaces. Until Java 7, this wasn't an issue. Interfaces could only define
+**abstract** methods, that is, methods without any implementation. So if a class implemented multiple interfaces with
+the same method signature, it was not a problem. The implementing class eventually had just one method to implement.
+
+With the introduction of `default` methods in interfaces, with Java 8, interfaces could choose to define `default`
+implementations for its methods (an interface can still define abstract methods). This means that if a class implements
+multiple interfaces, which define methods with the same signature, the child class would inherit separate
+implementations. This is complex and is not allowed.
+
+Java **disallows** inheritance of multiple implementations of the **same** methods, defined in separate interfaces.
+
+If the interfaces define **variables** with the **same** name, we can't access them without preceding the variable name
+with the interface name.
+
+An interface inherits other interfaces by using the keyword `extends` and it can extend **multiple** interfaces unlike
+classes which can extend **only one** class.
+
+- What happens if both the superclass and subclass define a variable or method with the **same name**?
+
+We can still access both of them. However, we must make our intent clear to Java, by prefixing the variable or method
+with the keywords `this` or `super`.
+
+The `this` keyword refers to the instance in which it's used. The `super` keyword refers to the parent class instance.
+
+- What happens when our base class and subclasses define **static** variables and methods with the same name? Can we
+  access a static member from the base class, in the derived class, the way we do for the instance variables?
+
+No, we can't. The static members belong to a class and not to instances. So we can't use the non-static `super` keyword.
+
+##### Polymorphism: Method overloading vs Method overriding
+
+**Method overloading** is a powerful mechanism that allows us to define **cohesive** class APIs.
+
+Suppose that we've written a naive utility class that implements different methods for **adding** two numbers, three
+numbers, and so on. If we've given the methods misleading or ambiguous names, such as `add2()`, `add3()`, `add4()`, then
+that would be a badly designed class API. Here's where method overloading comes into play.
+
+We can implement method overloading in two different ways:
+
+- implementing two or more methods that have the same name but take **different numbers** of arguments
+- implementing two or more methods that have the same name but take arguments of **different types**
+
+It's worth noting, that it's not possible to have two method implementations that differ only in their **return** types.
+
+**Type promotion** or widening primitive conversion:
+
+In simple terms, one given type is implicitly promoted to another one when there's no matching between the types of the
+arguments passed to the overloaded method and a specific method implementation.
+
+For ex:
+
+```
+public double add(int a, long b) {
+    return a + b;
+}
+
+public int add(int a, int b, int c) {
+    return a + b + c;
+}
+```
+
+Calling the method with two `int` arguments will result in the second argument being promoted to `long`, as in this case
+there's not a matching implementation of the method with two `int` arguments.
+
+Here's a summary of the **type promotion** rules that apply for method overloading:
+
+- `byte` can be promoted to `short`, `int`, `long`, `float`, or `double`
+- `short` can be promoted to `int`, `long`, `float`, or `double`
+- `char` can be promoted to `int`, `long`, `float`, or `double`
+- `int` can be promoted to `long`, `float`, or `double`
+- `long` can be promoted to `float` or `double`
+- `float` can be promoted to `double`
+
+**Static Binding**:
+
+The ability to associate a specific method call to the method's body is known as **binding**. In the case of method
+overloading, the binding is performed statically at **compile time**, hence it's called **static binding**. The compiler
+can effectively set the binding at compile time by simply checking the methods' signatures.
+
+**Method overriding** allows us to provide fine-grained implementations in subclasses for methods defined in a base
+class.
+
