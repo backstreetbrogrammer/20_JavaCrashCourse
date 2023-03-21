@@ -21,9 +21,9 @@ Tools used:
     - Methods
     - Control Flow
 3. Object-Oriented Programming
-    - Classes, Objects, Interfaces, Abstract Classes
-    - Inheritance - method overloading and overriding
-    - Polymorphism - composition and encapsulation
+    - Classes and Objects
+    - Inheritance
+    - Polymorphism - method overloading and overriding
 4. Arrays and Collections
     - Arrays
     - Arrays class utility
@@ -1058,7 +1058,67 @@ the members with **default** (`package-private`) access are inherited if the two
 
 On the other hand, the `private` and `static` members of a class are **not** inherited.
 
+###### Class Inheritance
+
+A class can inherit another class and define additional members.
+
+Base class `Animal`:
+
+```java
+public class Animal {
+    String type;
+    String size;
+    double weight;
+
+    void move(String speed) {
+        // describe the speed or movement
+    }
+}
+```
+
+The class `Dog` can inherit the members of `Animal` class by using the keyword `extends` in its declaration:
+
+```java
+public class Dog extends Animal {
+    String tailShape;
+
+    // unique to Dog
+    void bark() {
+        System.out.printf("This dog of size=[%s] and weight=[%f] barks very loudly%n", size, weight);
+    }
+}
+```
+
+To access inherited properties or methods, we can simply use them directly, and we don't need a reference to the
+superclass to access its members.
+
+###### Interface Inheritance
+
 Although classes can inherit only **one** `class`, they can implement **multiple** `interfaces`.
+
+```java
+public interface Floatable {
+    void floatOnWater();
+}
+```
+
+```java
+public interface Flyable {
+    void fly();
+}
+```
+
+```java
+public class Dog extends Animal implements Floatable, Flyable {
+    public void floatOnWater() {
+        System.out.println("I can swim but can not float like a duck!");
+    }
+
+    public void fly() {
+        System.out.println("I can not fly!");
+    }
+}
+```
 
 Java allows **multiple** inheritance using interfaces. Until Java 7, this wasn't an issue. Interfaces could only define
 **abstract** methods, that is, methods without any implementation. So if a class implemented multiple interfaces with
@@ -1071,11 +1131,103 @@ implementations. This is complex and is not allowed.
 
 Java **disallows** inheritance of multiple implementations of the **same** methods, defined in separate interfaces.
 
+```java
+public interface Floatable {
+    default void feed() {
+        System.out.println("Feeding Floatable animal");
+    }
+}
+```
+
+```java
+public interface Flyable {
+    default void feed() {
+        System.out.println("Feeding Flyable animal");
+    }
+}
+```
+
+```java
+public class Dog extends Animal implements Floatable, Flyable {
+    // THIS WON'T COMPILE because of same feed() method in both interfaces.
+    // If we do want to implement both interfaces, we'll have to override the feed() method.
+}
+```
+
 If the interfaces define **variables** with the **same** name, we can't access them without preceding the variable name
 with the interface name.
 
+```java
+public interface Floatable {
+    int duration = 10;
+}
+```
+
+```java
+public interface Flyable {
+    int duration = 20;
+}
+```
+
+```java
+public class Dog extends Animal implements Floatable, Flyable {
+
+    public void aMethod() {
+        System.out.println(duration); // won't compile
+        System.out.println(Floatable.duration); // outputs 10
+        System.out.println(Flyable.duration); // outputs 20
+    }
+}
+```
+
 An interface inherits other interfaces by using the keyword `extends` and it can extend **multiple** interfaces unlike
 classes which can extend **only one** class.
+
+```java
+public interface Floatable {
+    void floatOnWater();
+}
+```
+
+```java
+public interface Flyable {
+    void fly();
+}
+```
+
+```java
+public interface Talkable extends Floatable, Flyable {
+    void talk();
+}
+```
+
+When a class inherits another class or interfaces, apart from inheriting their members, it also inherits their **type**.
+This also applies to an interface that inherits other interfaces.
+
+_Best practice_: program to an interface (base class or interface), rather than programming to their implementations.
+
+For example, imagine a condition, where a housing society maintains a list of the pet animals owned by its families. All
+families might own different pet animals. So how can we refer to different animal instances? Here's the solution:
+
+```java
+public class Family {
+    private String address;
+    private Animal pet;
+
+    // standard constructor
+}
+```
+
+Because all derived classes of `Animal` inherit the type `Animal`, the derived class instances can be referred by using
+a variable of class `Animal`:
+
+```
+Family e1 = new Family("House 1", new Dog());
+Family e2 = new Family("House 3", new Cat());
+Family e3 = new Family("House 2", new Parrot());
+```
+
+###### Hidden Instance Members
 
 - What happens if both the superclass and subclass define a variable or method with the **same name**?
 
@@ -1084,12 +1236,72 @@ with the keywords `this` or `super`.
 
 The `this` keyword refers to the instance in which it's used. The `super` keyword refers to the parent class instance.
 
+```java
+public class Dog extends Animal {
+    private String type;
+
+    public String getAValue() {
+        return super.type;   // returns value of type defined in base class Animal
+        // return this.type;   // will return value of type defined in Dog
+        // return type;   // will return value of type defined in Dog
+    }
+}
+```
+
+###### Hidden Static Members
+
 - What happens when our base class and subclasses define **static** variables and methods with the same name? Can we
   access a static member from the base class, in the derived class, the way we do for the instance variables?
 
 No, we can't. The static members belong to a class and not to instances. So we can't use the non-static `super` keyword.
 
-##### Polymorphism: Method overloading vs Method overriding
+```java
+public class Animal {
+    public static String msg() {
+        return "Animal";
+    }
+}
+```
+
+```java
+public class Dog extends Animal {
+    public static String msg() {
+        // return super.msg(); // this won't compile
+        return Animal.msg(); // this will work
+    }
+}
+```
+
+Consider the following example, in which both the base class and derived class define a `static` method `msg()` with the
+same signature:
+
+```java
+public class Animal {
+    public static String msg() {
+        return "Animal";
+    }
+}
+```
+
+```java
+public class Dog extends Animal {
+    public static String msg() {
+        return "Dog";
+    }
+}
+```
+
+When we create objects:
+
+```
+Animal first = new Dog();
+Dog second = new Dog();
+```
+
+For the preceding code, `first.msg()` will output “Animal“ and `second.msg()` will output “Dog”. The static message that
+is called depends on the type of the variable used to refer to `Dog` instance.
+
+##### Polymorphism: Method overloading and Method overriding
 
 **Method overloading** is a powerful mechanism that allows us to define **cohesive** class APIs.
 
@@ -1103,6 +1315,27 @@ We can implement method overloading in two different ways:
 - implementing two or more methods that have the same name but take arguments of **different types**
 
 It's worth noting, that it's not possible to have two method implementations that differ only in their **return** types.
+
+```java
+public class Adder {
+
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    public double add(double a, double b) {
+        return a + b;
+    }
+
+    /*public double add(int a, int b) { // THIS WON'T COMPILE as it matches with: int add(int a, int b){}
+        return a + b;
+    }*/
+}
+```
 
 **Type promotion** or widening primitive conversion:
 
@@ -1141,4 +1374,74 @@ can effectively set the binding at compile time by simply checking the methods' 
 
 **Method overriding** allows us to provide fine-grained implementations in subclasses for methods defined in a base
 class.
+
+Base class `Animal`:
+
+```java
+public class Animal {
+    String type;
+    String size;
+    double weight;
+
+    public void move(String speed) {
+        // describe the speed or movement
+    }
+
+    public void makeNoise() {
+        // describe the animal sound
+    }
+}
+```
+
+The class `Dog` can inherit the members of `Animal` class by using the keyword `extends` in its declaration:
+
+```java
+public class Dog extends Animal {
+    String tailShape;
+
+    @Override
+    public void makeNoise() {
+        System.out.println("I make noise by barking");
+    }
+}
+```
+
+We've simply overridden the `makeNoise()` method in order to provide a more refined implementation for the subtype
+`Dog`. If an application uses instances of the `Animal` class, then it can work with instances of `Dog` as well, as both
+implementations of the `makeNoise()` method have the same signature and the same **return** type `void`.
+
+###### Liskov substitution principle
+
+Liskov substitution principle (LSP) states that if an application works with a given base type, then it should also work
+with any of its subtypes. That way, type substitutability is properly preserved.
+
+The biggest problem with **method overriding** is that some specific method implementations in the derived classes might
+not fully adhere to the LSP and therefore fail to preserve type substitutability.
+
+It's valid to make an overridden method to accept arguments of different types and return a different type as well, but
+with full adherence to these rules:
+
+- If a method in the base class takes argument(s) of a given type, the overridden method should take the same type or a
+  supertype (a.k.a. _contravariant_ method arguments)
+- If a method in the base class returns `void`, the overridden method should return `void`
+- If a method in the base class returns a **primitive**, the overridden method should return the same **primitive**
+- If a method in the base class returns a certain **type**, the overridden method should return the same **type** or
+  a **subtype** (a.k.a. _covariant_ return type)
+- If a method in the base class throws an **exception**, the overridden method must throw the same exception or a
+  subtype of the base class exception
+
+###### Dynamic Binding
+
+Considering that **method overriding** can be only implemented with inheritance, where there is a hierarchy of a base
+type and subtype(s), the compiler can't determine at compile time what method to call, as both the base class and the
+subclasses define the same methods.
+
+As a consequence, the compiler needs to check the type of object to know what method should be invoked.
+
+As this checking happens at runtime, method overriding is a typical example of dynamic binding.
+
+###### Interview Problem 8 (Goldman Sachs): Design deck of cards and implement BlackJack
+
+Design the data structures for a generic deck of cards. Explain how you would subclass the data structures to implement
+BlackJack.
 
