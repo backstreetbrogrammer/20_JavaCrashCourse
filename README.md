@@ -1,7 +1,7 @@
-# Java Crash Course
+# Java Fundamentals Crash Course
 
-> This is a Java Crash Course covering various Java topics, design patterns, performance tuning, interview problems
-> and solutions and much more.
+> This is a Java fundamentals crash course covering basic Java topics, object-oriented programming, arrays and
+> collections along with handful of real interview problems and solutions.
 
 Tools used:
 
@@ -12,65 +12,28 @@ Tools used:
 
 ## Table of contents
 
-### Module 1: Java Fundamentals Recap
-
 1. Java Fundamentals
     - Data Types: Primitives, String
     - Operators
     - Statements, Expressions and Code Blocks
     - Methods
     - Control Flow
-3. Object-Oriented Programming
+2. Object-Oriented Programming
     - Classes and Objects
     - Inheritance
     - Polymorphism - method overloading and overriding
-4. Arrays and Collections
+3. Arrays and Collections
     - Arrays
     - Arrays class utility
     - List, Set, Map
     - Comparable and Comparator
     - Collections class utility
-5. Concurrency Basics
-    - Threading fundamentals - creation and coordination
-    - Thread pools
-    - Concurrent Collections
-    - Synchronization techniques - Locks and Conditions
-6. Lambda and Streams
-    - Lambda Expressions
-    - Functional Interfaces
-    - Streams, Parallel Streams
 
 ---
 
-### Module 2: Advanced Java Topics
+### Chapter 01. Java Fundamentals
 
----
-
-### Module 3: Test-Driven Development and Test Automation
-
----
-
-### Module 4: Clean Code, Refactoring, and Design Patterns
-
----
-
-### Module 5: Message Queues and Event-Driven Architecture
-
----
-
-### Module 6: Microservices and Distributed Systems
-
----
-
-### Module 7: DevOps and CI/CD Pipeline
-
----
-
-### Module 1: Java Fundamentals Recap
-
-#### Chapter 01. Java Fundamentals
-
-##### Data Types: Primitives, String
+#### Data Types: Primitives, String
 
 ![Primitives in Java](PrimitivesDataTypes.PNG)
 
@@ -118,7 +81,7 @@ String objects are **immutable**, which means that once created, their values ca
 technically a primitive data type, but considering the special support given to it by the language, we'll probably tend
 to think of it as such.
 
-###### Interview Problem 1 (UBS): Is there any limit to the length of String we can create in Java ?
+#### Interview Problem 1 (UBS): Is there any limit to the length of String we can create in Java ?
 
 **Solution**:
 
@@ -133,7 +96,12 @@ Thus, we should be able to get a String of length whichever is **smaller**:
 
 2. Half of allotted maximum heap size (since each character is 2 bytes).
 
-##### Operators
+- If heap size is **2 GB**, i.e. 2 * 1024 MB = 2 * 1024 * 1024 KB = 2 * 1024 * 1024 * 1024 Bytes.
+- Dividing it by 2 gives = 1024 * 1024 * 1024 = **1,073,741,824**
+
+Thus, the answer is that in JVM with heap size of **2 GB**, maximum length of String possible is **1,073,741,824**.
+
+#### Operators
 
 Operators are special symbols that perform specific operations on one, two, or three operands, and then return a result.
 
@@ -223,11 +191,11 @@ One of the most important things to consider is **operators precedence** used fo
 
 Best practice is to use parenthesis `()` to change the precedence and make the code more readable.
 
-###### Interview Problem 2 (CLSA): Compute the parity of a `long` word (64-bits).
+#### Interview Problem 2 (CLSA): Compute the parity of a `long` word (64-bits).
 
 The **parity** of a binary word (64-bit) is **1** if the number of 1s in the word is **odd**; otherwise, it is **0**.
-For example, the parity of 1011 is 1, and the parity of 10001000 is 0. Parity checks are used to detect single bit
-errors in data storage and communications.
+For example, the parity of number 11 (binary=1011) is 1, and the parity of number 136 (binary=10001000) is 0. Parity
+checks are used to detect single bit errors in data storage and communications.
 
 **Solution**:
 
@@ -296,9 +264,7 @@ Num=[999], Binary=[1111100111], BitCount=[8], [parityUsingApi=0], [parity=0], [p
 Num=[1], Binary=[1], BitCount=[1], [parityUsingApi=1], [parity=1], [parityOptimised=1]
 ```
 
-##### Statements, Expressions and Code Blocks
-
-###### What is a **statement** and an **expression** in Java?
+#### Statements, Expressions and Code Blocks
 
 In Java, a **statement** is an executable instruction that tells the compiler what to perform. It forms a complete
 command to be executed and can include one or more **expressions**.
@@ -318,7 +284,7 @@ System.out.print("Hello Students!!");
 "Hello Students!!" 
 ``` 
 
-###### Java Language Keywords
+#### Java Language Keywords
 
 Here is a list of **keywords** in the Java programming language. We cannot use any of the following as identifiers in
 our programs. The keywords `const` and `goto` are reserved, even though they are not currently used. `true`, `false`,
@@ -326,7 +292,7 @@ and `null` might seem like keywords, but they are actually literals; we cannot u
 
 ![Java Language Keywords](Keywords.PNG)
 
-###### Java Code Blocks
+#### Java Code Blocks
 
 Writing code is similar to writing a document. It consists of special hierarchical units which together form a whole.
 
@@ -343,14 +309,14 @@ that are contained by a declaring block.
 **Scope**: describes the accessibility of a variable:
 
 - "In scope" means the variable can be used in the code block
-- "Out of scope" means the variable is no longer avaiable in the code block
+- "Out of scope" means the variable is no longer available in the code block
 
 **Best practice**:
 
 - declare and initialize variables in the same place if possible
 - declare variables in the narrowest scope possible
 
-###### The if-then and if-then-else Statements
+#### The if-then and if-then-else Statements
 
 The `if-then` statement is the most basic of all the control flow statements. It tells our program to execute a certain
 section of code only if a particular test evaluates to `true`.
@@ -359,7 +325,7 @@ The `if-then-else` statement provides a secondary path of execution when an "if"
 
 ![If-Then-Else](IfElse.PNG)
 
-##### Methods
+#### Methods
 
 A method is a block of code which only runs when it is called. We can pass data, known as parameters, into a method.
 Methods are used to perform certain actions, and they are also known as functions.
@@ -367,7 +333,7 @@ Methods are used to perform certain actions, and they are also known as function
 **Parameter** is the definition as shown in the method declaration, and the **argument** is the value that is passed to
 the method when we call it.
 
-Why use methods?
+**Why use methods?**
 
 To reuse code: define the code once, and use it many times.
 
@@ -385,7 +351,7 @@ A method consists of six parts:
 
 ![Methods](Methods.PNG)
 
-###### Method Overloading
+#### Method Overloading
 
 Method Overloading allows different methods to have the same name, but different signatures where the signature can
 differ by the number of input parameters or type of input parameters, or a mixture of both.
@@ -398,7 +364,7 @@ Different Ways of Method Overloading in Java:
 - Changing Data Types of the Arguments.
 - Changing the Order of the Parameters of Methods
 
-###### Exceptions and Errors
+#### Exceptions and Errors
 
 **Exception** is an unwanted or unexpected event, which occurs during the execution of a program, i.e. at run time, that
 disrupts the normal flow of the program’s instructions. Exceptions can be caught and handled by the program. When an
@@ -422,14 +388,14 @@ Use **try-catch-finally** to handle Exceptions:
 
 ![try-catch-finally](tryCatch.PNG)
 
-##### Control Flow
+#### Control Flow
 
 The statements inside our source files are generally executed from top to bottom, in the order that they appear. Control
 flow statements, however, break up the flow of execution by employing decision-making statements (`if-then`,
 `if-then-else`, `switch`), looping statements (`for`, `while`, `do-while`), and branching statements (`break`,
 `continue`, `return`), enabling our program to conditionally execute particular blocks of code.
 
-###### The `switch` statement
+#### The `switch` statement
 
 The `switch` statement is a multi-way branch statement. In simple words, the `switch` statement executes one statement
 from multiple conditions. It is like an `if-else-if` ladder statement. It provides an easy way to dispatch execution to
@@ -451,7 +417,7 @@ Some important rules for `switch` statements:
 - The `default` statement is optional and can appear anywhere inside the switch block. In case, if it is not at the end,
   then a break statement must be kept after the default statement to omit the execution of the next case statement.
 
-###### The `for` statement
+#### The `for` statement
 
 Loops in Java come into use when we need to repeatedly execute a block of statements.
 
@@ -476,7 +442,7 @@ Syntax:
 
 ![enhanced for](enhancedFor.PNG)
 
-###### The `while` and `do-while` statements
+#### The `while` and `do-while` statements
 
 The `while` statement continually executes a block of statements while a particular condition is `true`. Its syntax can
 be expressed as:
@@ -502,10 +468,12 @@ do {
 The difference between `do-while` and `while` is that `do-while` evaluates its expression at the bottom of the loop
 instead of the top. Therefore, the statements within the `do block` are always executed **at least once**.
 
-###### Interview Problem 3 (Merrill Lynch): Reverse Digits
+#### Interview Problem 3 (Merrill Lynch): Reverse Digits
 
 Write a program which takes an integer and returns the integer corresponding to the digits of the input written in
-reverse order. For example, the reverse of 1234 is 4321, and the reverse of -975 is -579.
+reverse order.
+
+For example, the reverse of **1234** is **4321**, and the reverse of **-975** is **-579**.
 
 **Solution**:
 
@@ -567,7 +535,7 @@ Num=[87580], reverseUsingApi=[8578], reverse=[8578]
 Num=[-1], reverseUsingApi=[-1], reverse=[-1]
 ```
 
-###### Interview Problem 4 (Goldman Sachs): Check if a decimal integer is palindrome
+#### Interview Problem 4 (Goldman Sachs): Check if a decimal integer is palindrome
 
 A palindromic String is one which reads the same forwards and backwards, e.g. civic, radar, level, rotor, kayak,
 reviver, madam.
@@ -642,7 +610,7 @@ Num=[100], isPalindrome=[false]
 Num=[2147483647], isPalindrome=[false]
 ```
 
-###### Interview Problem 5 (Merrill Lynch): Compute `x` to the power `y`
+#### Interview Problem 5 (Merrill Lynch): Compute `x` to the power `y`
 
 Write a program that takes double `x` and an integer `y` and returns `x` to the power `y` => `x.pow(y)`.
 
@@ -666,7 +634,7 @@ public class Power {
         }
 
         // when y is a power of 2 => can replace (x^2)^2, ....
-        // thus, if the LSB of y is 0 => result is (x^(y/2))^2; otherwise it is (x * (x^(y/2))^2)
+        // thus, if the LSB of y is 0 (even) => result is (x^(y/2))^2; otherwise it is (x * (x^(y/2))^2)
         while (pow != 0) {
             if ((pow & 1) != 0) { // LSB of y is not 0
                 result *= x;
@@ -768,7 +736,7 @@ Benefits of OOP for software engineering:
 - Easier to debug, classes often contain all applicable information to them
 - Securely protects sensitive information through encapsulation
 
-##### Classes and Objects
+#### Classes and Objects
 
 A class in java can contain:
 
@@ -830,7 +798,7 @@ Static methods can **not** be **overridden**, since they are resolved using **st
 compile time. However, we can have the same name methods declared `static` in both **superclass** and **subclass**, but
 it will be called **Method Hiding** as the derived class method will hide the base class method.
 
-###### Interview Problem 6 (JP Morgan Chase): Design an immutable class in Java
+#### Interview Problem 6 (JP Morgan Chase): Design an immutable class in Java
 
 Immutability is a characteristic of Java objects that makes them immutable to future changes once they have been
 initialized. Its internal state cannot be changed in any way.
@@ -1000,7 +968,7 @@ sequence:
 
 5. The constructor completes.
 
-###### Interview Problem 7 (Barclays): How many ways to create an object of a class?
+#### Interview Problem 7 (Barclays): How many ways to create an object of a class?
 
 When an object of a class is created, the class is said to be **instantiated**. All the instances share the attributes
 and the behavior of the class. But the values of those attributes, i.e. the state are unique for each object. A single
@@ -1039,7 +1007,7 @@ ObjectInputStream inStream = new ObjectInputStream(anInputStream );
 MyObject object = (MyObject) inStream.readObject();
 ```
 
-##### Inheritance
+#### Inheritance
 
 One of the core principles of Object-Oriented Programming – inheritance – enables us to reuse existing code or extend an
 existing type.
@@ -1058,7 +1026,7 @@ the members with **default** (`package-private`) access are inherited if the two
 
 On the other hand, the `private` and `static` members of a class are **not** inherited.
 
-###### Class Inheritance
+#### Class Inheritance
 
 A class can inherit another class and define additional members.
 
@@ -1070,7 +1038,7 @@ public class Animal {
     String size;
     double weight;
 
-    void move(String speed) {
+    void move(final String speed) {
         // describe the speed or movement
     }
 }
@@ -1092,7 +1060,7 @@ public class Dog extends Animal {
 To access inherited properties or methods, we can simply use them directly, and we don't need a reference to the
 superclass to access its members.
 
-###### Interface Inheritance
+#### Interface Inheritance
 
 Although classes can inherit only **one** `class`, they can implement **multiple** `interfaces`.
 
@@ -1227,7 +1195,7 @@ Family e2 = new Family("House 3", new Cat());
 Family e3 = new Family("House 2", new Parrot());
 ```
 
-###### Hidden Instance Members
+#### Hidden Instance Members
 
 - What happens if both the superclass and subclass define a variable or method with the **same name**?
 
@@ -1248,7 +1216,7 @@ public class Dog extends Animal {
 }
 ```
 
-###### Hidden Static Members
+#### Hidden Static Members
 
 - What happens when our base class and subclasses define **static** variables and methods with the same name? Can we
   access a static member from the base class, in the derived class, the way we do for the instance variables?
@@ -1301,7 +1269,7 @@ Dog second = new Dog();
 For the preceding code, `first.msg()` will output “Animal“ and `second.msg()` will output “Dog”. The static message that
 is called depends on the type of the variable used to refer to `Dog` instance.
 
-##### Polymorphism: Method overloading and Method overriding
+#### Polymorphism: Method overloading and Method overriding
 
 **Method overloading** is a powerful mechanism that allows us to define **cohesive** class APIs.
 
@@ -1319,15 +1287,15 @@ It's worth noting, that it's not possible to have two method implementations tha
 ```java
 public class Adder {
 
-    public int add(int a, int b) {
+    public int add(final int a, final int b) {
         return a + b;
     }
 
-    public int add(int a, int b, int c) {
+    public int add(final int a, final int b, final int c) {
         return a + b + c;
     }
 
-    public double add(double a, double b) {
+    public double add(final double a, final double b) {
         return a + b;
     }
 
@@ -1383,7 +1351,7 @@ public class Animal {
     String size;
     double weight;
 
-    public void move(String speed) {
+    public void move(final String speed) {
         // describe the speed or movement
     }
 
@@ -1410,7 +1378,7 @@ We've simply overridden the `makeNoise()` method in order to provide a more refi
 `Dog`. If an application uses instances of the `Animal` class, then it can work with instances of `Dog` as well, as both
 implementations of the `makeNoise()` method have the same signature and the same **return** type `void`.
 
-###### Liskov substitution principle
+#### Liskov substitution principle
 
 Liskov substitution principle (LSP) states that if an application works with a given base type, then it should also work
 with any of its subtypes. That way, type substitutability is properly preserved.
@@ -1430,7 +1398,7 @@ with full adherence to these rules:
 - If a method in the base class throws an **exception**, the overridden method must throw the same exception or a
   subtype of the base class exception
 
-###### Dynamic Binding
+#### Dynamic Binding
 
 Considering that **method overriding** can be only implemented with inheritance, where there is a hierarchy of a base
 type and subtype(s), the compiler can't determine at compile time what method to call, as both the base class and the
@@ -1440,8 +1408,272 @@ As a consequence, the compiler needs to check the type of object to know what me
 
 As this checking happens at runtime, method overriding is a typical example of dynamic binding.
 
-###### Interview Problem 8 (Goldman Sachs): Design deck of cards and implement BlackJack
+#### Interview Problem 8 (Goldman Sachs): Design deck of cards and implement BlackJack
 
 Design the data structures for a generic deck of cards. Explain how you would subclass the data structures to implement
 BlackJack.
+
+**Solution**:
+
+First create **enum** for `Suit` and `Rank`:
+
+```java
+import java.util.Arrays;
+
+public enum Suit {
+    CLUBS("Clubs"),
+    DIAMONDS("Diamonds"),
+    HEARTS("Hearts"),
+    SPADES("Spades"),
+    UNKNOWN("Unknown Suit");
+
+    private final String suit;
+
+    Suit(final String suit) {
+        this.suit = suit;
+    }
+
+    public String suit() {
+        return suit;
+    }
+
+    public static Suit get(final String s) {
+        return Arrays.stream(Suit.values())
+                     .filter(r -> r.suit.equals(s))
+                     .findFirst()
+                     .orElse(UNKNOWN);
+    }
+}
+```
+
+```java
+import java.util.Arrays;
+
+public enum Rank {
+    ACE("Ace"),
+    TWO("2"),
+    THREE("3"),
+    FOUR("4"),
+    FIVE("5"),
+    SIX("6"),
+    SEVEN("7"),
+    EIGHT("8"),
+    NINE("9"),
+    TEN("10"),
+    JACK("Jack"),
+    QUEEN("Queen"),
+    KING("King"),
+    UNKNOWN("Unknown Rank");
+
+    private final String rank;
+
+    Rank(final String rank) {
+        this.rank = rank;
+    }
+
+    public String rank() {
+        return rank;
+    }
+
+    public static Rank get(final String s) {
+        return Arrays.stream(Rank.values())
+                     .filter(r -> r.rank.equals(s))
+                     .findFirst()
+                     .orElse(UNKNOWN);
+    }
+}
+```
+
+Then compose these 2 enums in `Card` class - **Composition**
+
+```java
+public class Card {
+    Rank rank;
+    Suit suit;
+
+    public Card(final String rank, final String suit) {
+        this.rank = Rank.get(rank);
+        this.suit = Suit.get(suit);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s of %s", rank.rank(), suit.suit());
+    }
+}
+```
+
+Now implement the `Blackjack` class with deck of cards as: `List<Card>`. Implement the methods needed to run the game
+while taking user's inputs.
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+
+public class Blackjack {
+
+    private final List<Card> deck;
+
+    public Blackjack() {
+        this.deck = newDeck();
+        Collections.shuffle(deck);
+    }
+
+    public List<Card> getDeck() {
+        return deck;
+    }
+
+    // Creates a new deck of 52 cards
+    private List<Card> newDeck() {
+        final String[] ranks = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+        final String[] suits = {"Clubs", "Diamonds", "Hearts", "Spades"};
+        final List<Card> deck = new ArrayList<>();
+        for (final String rank : ranks) {
+            for (final String suit : suits) {
+                deck.add(new Card(rank, suit));
+            }
+        }
+        return deck;
+    }
+
+    // Calculates the value of a hand of cards
+    private int getHandValue(final List<Card> hand) {
+        int value = 0;
+        boolean hasAce = false;
+        for (final Card card : hand) {
+            final Rank rank = card.rank;
+            if (rank == Rank.ACE) {
+                hasAce = true;
+                value += 11;
+            } else if (rank == Rank.KING || rank == Rank.QUEEN || rank == Rank.JACK) {
+                value += 10;
+            } else {
+                value += Integer.parseInt(rank.rank());
+            }
+        }
+        if (hasAce && value > 21) {
+            value -= 10;
+        }
+        return value;
+    }
+
+    private boolean isBusted(final List<Card> hand) {
+        return getHandValue(hand) > 21;
+    }
+
+    private boolean isBlackJack(final List<Card> hand) {
+        return getHandValue(hand) == 21;
+    }
+
+    public static void main(final String[] args) {
+        try (final Scanner input = new Scanner(System.in)) {
+            final Blackjack blackjack = new Blackjack();
+            final List<Card> deck = blackjack.getDeck();
+
+            // Initialize player's and dealer's hands
+            final List<Card> playerHand = new ArrayList<>();
+            final List<Card> dealerHand = new ArrayList<>();
+
+            // Deal initial cards
+            Collections.shuffle(deck);
+
+            playerHand.add(deck.remove(0));
+            dealerHand.add(deck.remove(0));
+            playerHand.add(deck.remove(0));
+            dealerHand.add(deck.remove(0));
+
+            // Show initial hands
+            System.out.println("Your hand: " + playerHand);
+            System.out.println("Dealer's hand: " + dealerHand.get(0) + ", [hidden]");
+
+            // Player's turn
+            while (true) {
+                System.out.print("Do you want to 'hit' or 'stand'? ");
+                final String choice = input.nextLine();
+                if (choice.equalsIgnoreCase("hit")) {
+                    playerHand.add(deck.remove(0));
+                    System.out.println("Your hand: " + playerHand);
+                    if (blackjack.isBusted(playerHand)) {
+                        System.out.println("Bust! You lose.");
+                        return;
+                    } else if (blackjack.isBlackJack(playerHand)) {
+                        System.out.println("BlackJack!! You win.");
+                        return;
+                    }
+                } else if (choice.equalsIgnoreCase("stand")) {
+                    break;
+                } else {
+                    System.out.println("Invalid input. Please enter 'hit' or 'stand'.");
+                }
+            }
+
+            // Dealer's turn
+            while (blackjack.getHandValue(dealerHand) < 17) {
+                dealerHand.add(deck.remove(0));
+                System.out.println("Dealer's hand: " + dealerHand);
+                if (blackjack.isBusted(dealerHand)) {
+                    System.out.println("Dealer busts! You win.");
+                    return;
+                } else if (blackjack.isBlackJack(dealerHand)) {
+                    System.out.println("Dealers BlackJack!! You lose.");
+                    return;
+                }
+            }
+
+            // Compare hands
+            final int playerValue = blackjack.getHandValue(playerHand);
+            final int dealerValue = blackjack.getHandValue(dealerHand);
+            System.out.printf("Your points=[%d], Dealers points=[%d]%n", playerValue, dealerValue);
+            if (playerValue > dealerValue) {
+                System.out.println("You win!");
+            } else if (dealerValue > playerValue) {
+                System.out.println("Dealer wins.");
+            } else {
+                System.out.println("It's a tie.");
+            }
+        }
+    }
+
+}
+```
+
+Sample Outputs:
+
+Run 1:
+
+```
+Your hand: [Queen of Hearts, Jack of Clubs]
+Dealer's hand: 5 of Hearts, [hidden]
+Do you want to 'hit' or 'stand'? stand
+Dealer's hand: [5 of Hearts, 8 of Hearts, Jack of Hearts]
+Dealer busts! You win.
+```
+
+Run 2:
+
+```
+Your hand: [7 of Clubs, 8 of Diamonds]
+Dealer's hand: Queen of Hearts, [hidden]
+Do you want to 'hit' or 'stand'? hit
+Your hand: [7 of Clubs, 8 of Diamonds, 3 of Clubs]
+Do you want to 'hit' or 'stand'? stand
+Your points=[18], Dealers points=[20]
+Dealer wins.
+```
+
+Run 3:
+
+```
+Your hand: [2 of Spades, 10 of Clubs]
+Dealer's hand: Ace of Clubs, [hidden]
+Do you want to 'hit' or 'stand'? hit
+Your hand: [2 of Spades, 10 of Clubs, 10 of Spades]
+Bust! You lose.
+```
+
+---
+
+### Chapter 03. Arrays and Collections
 
