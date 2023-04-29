@@ -1677,3 +1677,157 @@ Bust! You lose.
 
 ### Chapter 03. Arrays and Collections
 
+#### Arrays
+
+Array is an object containing a fixed number of values of the same type and represented as contiguous block of memory.
+The elements of an array are indexed, which means we can access them with numbers called indices. Accessing in array is
+very fast and takes O(1) time.
+
+We can **declare** and **initialize** an array by several ways as listed below.
+
+- one element at a time
+
+**1-D array**
+
+```
+int[] array = new int[10];
+for (int i = 0; i < array.length; i++) {
+    array[i] = i + 2;
+}
+```
+
+**2-D array**
+
+```
+int[][] array = new int[2][5];
+for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 5; j++) {
+        array[i][j] = j + 1;
+    }
+}
+```
+
+- at the time of declaration
+
+```
+String countries[] = new String[] {"Japan", "USA", "China", "France", "Germany" };
+```
+
+We can optionally remove the type:
+
+```
+int array[] = { 1, 2, 3, 4, 5 };
+```
+
+- using `Arrays.setAll()`
+
+```
+int[] array = new int[10];
+Arrays.setAll(array, p -> p > 6 ? -1 : p);
+
+// [0, 1, 2, 3, 4, 5, 6, -1, -1, -1]
+```
+
+- using `Arrays.fill()`
+
+```
+long array[] = new long[5];
+Arrays.fill(array, 10L);
+
+// [10, 10, 10, 10, 10]
+```
+
+- using `Arrays.copyOf()`: creates a new array by copying another array
+
+```
+int array[] = { 1, 2, 3, 4, 5 };
+int[] copy = Arrays.copyOf(array, 3); // [1, 2, 3]
+```
+
+We can access array elements using its index.
+
+```
+int array[] = { 1, 2, 3, 4, 5 };
+System.out.println(array[0]); // 1
+```
+
+**Varargs**
+
+**Varargs** are used to pass an arbitrary number of arguments to a method.
+
+```
+void someMethod(String... varargs) {
+   ...
+   ...
+}
+String[] anArray = new String[] {"Java", "Python", "C#"};
+someMethod(anArray);
+```
+
+We can transform an array into `List` using `Arrays.asList()`:
+
+```
+int[] anArray = { 1, 2, 3, 4, 5 };
+List<Integer> aList = Arrays.asList(anArray);
+```
+
+We can transform an array into `Stream` using `Arrays.stream()`:
+
+```
+int[] anArray = { 1, 2, 3, 4, 5 };
+Stream<Integer> aStream = Arrays.stream(anArray);
+```
+
+We can sort an array using `Arrays.sort()`; however the array elements to be sorted SHOULD be `Comparable` or given a
+custom `Comparator`:
+
+```
+int[] anArray = new int[] {5, 2, 1, 4, 8};
+Arrays.sort(anArray); // anArray is now {1, 2, 4, 5, 8}
+
+String[] anotherArray = new String[] {"A", "E", "Z", "B", "C"};
+Arrays.sort(anotherArray, 1, 3, Comparator.comparing(String::toString).reversed()); 
+// anotherArray is now {"A", "Z", "E", "B", "C"}
+```
+
+We can do a binary search in an array using `Arrays.binarySearch()`; however the array elements to be sorted SHOULD
+be `Comparable` or given a custom `Comparator`. Also, the array MUST be sorted prior to making this call.
+
+```
+int[] anArray = new int[] {5, 2, 1, 4, 8};
+Arrays.sort(anArray); // anArray is now {1, 2, 4, 5, 8}
+int index = Arrays.binarySearch(anArray, 4);
+System.out.println("Found at index " + index); // 2
+```
+
+**Concatenating arrays**
+
+The new array should be the sum of the lengths of each array. The easiest way to concatenate is to use
+`Stream.concat()` and call `toArray()` after it.
+
+```
+int[] anArray = new int[] {5, 2, 1, 4, 8};
+int[] anotherArray = new int[] {10, 4, 9, 11, 2};
+int[] resultArray = IntStream.concat(Arrays.stream(anArray), Arrays.stream(anotherArray)).toArray();
+```
+
+Another way is to use `System.arraycopy()`:
+
+```
+int[] anArray = new int[] {5, 2, 1, 4, 8};
+int[] anotherArray = new int[] {10, 4, 9, 11, 2};
+int[] resultArray = new int[anArray.length + anotherArray.length];
+System.arraycopy(anArray, 0, resultArray, 0, anArray.length);
+System.arraycopy(anotherArray, 0, resultArray, anArray.length, anotherArray.length);
+```
+
+#### Interview Problem 9 (Barclays): Implement a circular array
+
+This is common problem being asked if joining a low-latency high-throughput trading systems team. Implement a
+CircularArray class that supports an array-like data structure (ring buffer) which can be used for buffering data
+between two or more threads. As we keep writing to a ring buffer, it wraps around as it reaches the end.
+
+**Solution**
+
+
+
