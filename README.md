@@ -12,19 +12,18 @@ Tools used:
 
 ## Table of contents
 
-1. Java Fundamentals
-    - Data Types: Primitives, String
-    - Operators
-    - Statements, Expressions and Code Blocks
-    - Methods
-    - Control Flow
-2. Object-Oriented Programming
-    - Classes and Objects
-    - Inheritance
-    - Polymorphism - method overloading and overriding
-3. Arrays and Collections
-    - Arrays
-    - Arrays class utility
+1. [Java Fundamentals](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#chapter-01-java-fundamentals)
+    - [Data Types: Primitives, String](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#data-types-primitives-string)
+    - [Operators](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#operators)
+    - [Statements, Expressions and Code Blocks](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#statements-expressions-and-code-blocks)
+    - [Methods](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#methods)
+    - [Control Flow](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#control-flow)
+2. [Object-Oriented Programming](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#chapter-02-object-oriented-programming)
+    - [Classes and Objects](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#classes-and-objects)
+    - [Inheritance](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#inheritance)
+    - [Polymorphism - method overloading and overriding](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#polymorphism-method-overloading-and-method-overriding)
+3. [Arrays and Collections](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#chapter-03-arrays-and-collections)
+    - [Arrays](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#arrays)
     - List, Set, Map
     - Comparable and Comparator
     - Collections class utility
@@ -1821,7 +1820,7 @@ System.arraycopy(anArray, 0, resultArray, 0, anArray.length);
 System.arraycopy(anotherArray, 0, resultArray, anArray.length, anotherArray.length);
 ```
 
-#### Interview Problem 9 (Barclays): Implement a circular array
+#### Interview Problem 9 (UBS): Implement a circular array
 
 This is common problem being asked if joining a low-latency high-throughput trading systems team. Implement a
 CircularArray class that supports an array-like data structure (ring buffer) which can be used for buffering data
