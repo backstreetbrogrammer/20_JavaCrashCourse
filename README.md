@@ -24,9 +24,7 @@ Tools used:
     - [Polymorphism - method overloading and overriding](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#polymorphism-method-overloading-and-method-overriding)
 3. [Arrays and Collections](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#chapter-03-arrays-and-collections)
     - [Arrays](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#arrays)
-    - List, Set, Map
-    - Comparable and Comparator
-    - Collections class utility
+    - [Collections](https://github.com/backstreetbrogrammer/20_JavaCrashCourse#collections)
 
 ---
 
@@ -1828,5 +1826,195 @@ between two or more threads. As we keep writing to a ring buffer, it wraps aroun
 
 **Solution**
 
+A Ring Buffer is implemented using a fixed-size array that wraps around at the boundaries.
+
+It keeps track of three things:
+
+- the next available slot in the buffer to `insert` an element
+- the next `unread` element in the buffer
+- the `end` of the array – the point at which the buffer `wraps` around to the start of the array
+
+![Circular Array](CircularArray.PNG)
+
+These are few properties which we need to use:
+
+- **Capacity**: the fixed maximum size of the buffer OR array's length
+- **Write Sequence**: starting at -1, increments by 1 as we insert an element
+- **Read Sequence**: starting at 0, increments by 1 as we consume an element
+- **Size**: the number of unread elements
+
+We can map a **sequence** to an **index** in the array by using a `mod` operation:
+
+```
+arrayIndex = sequence % capacity
+```
+
+Insert an element:
+
+```
+buffer[++writeSequence % capacity] = element
+```
+
+Read an element:
+
+```
+element = buffer[readSequence++ % capacity]
+```
+
+Consuming an element **DOES NOT REMOVE** it from the buffer – it just stays in the array until it's overwritten. As we
+wrap around the array, we will start overwriting the data in the buffer.
+
+The buffer is full if the **size** of the buffer is equal to its **capacity**, where its size is equal to the number of
+unread elements:
+
+```
+size = (writeSequence - readSequence) + 1
+isFull = (size == capacity)
+```
+
+![Full RingBuffer](FullRingBuffer.PNG)
+
+If the **write** sequence lags behind the **read** sequence, the buffer is **empty**:
+
+```
+isEmpty = writeSequence < readSequence
+```
+
+The buffer returns a `null` value if it's empty.
+
+![Empty RingBuffer](EmptyRingBuffer.PNG)
+
+**RingBuffer** class:
+
+```java
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class RingBuffer<E> {
+
+    private static final int DEFAULT_CAPACITY = 8;
+
+    private final int capacity;
+    private final E[] data;
+    private final AtomicInteger writeSequence = new AtomicInteger(-1);
+    private final AtomicInteger readSequence = new AtomicInteger();
+
+    public RingBuffer(final int capacity) {
+        this.capacity = (capacity < 1) ? DEFAULT_CAPACITY : capacity;
+        this.data = (E[]) new Object[this.capacity];
+    }
+
+    public boolean offer(final E element) {
+        if (isNotFull()) {
+            data[writeSequence.incrementAndGet() % capacity] = element;
+            return true;
+        }
+
+        return false;
+    }
+
+    public E poll() {
+        if (isNotEmpty()) {
+            return data[readSequence.getAndIncrement() % capacity];
+        }
+
+        return null;
+    }
+
+    public int capacity() {
+        return capacity;
+    }
+
+    public int size() {
+        return (writeSequence.get() - readSequence.get()) + 1;
+    }
+
+    public boolean isEmpty() {
+        return writeSequence.get() < readSequence.get();
+    }
+
+    public boolean isFull() {
+        return size() >= capacity;
+    }
+
+    private boolean isNotEmpty() {
+        return !isEmpty();
+    }
+
+    private boolean isNotFull() {
+        return !isFull();
+    }
+
+}
+```
+
+**RingBufferTest** class:
+
+```java
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class RingBufferTest {
+
+    private final String[] data = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J"};
+    private final int defaultCapacity = data.length;
+
+    @Test
+    public void givenRingBuffer_whenAnElementIsEnqueued_thenSizeIsOne() {
+        final RingBuffer<String> buffer = new RingBuffer<>(defaultCapacity);
+
+        assertTrue(buffer.offer("D"));
+        assertEquals(1, buffer.size());
+    }
+
+    @Test
+    public void givenRingBuffer_whenAnElementIsDequeued_thenElementMatchesEnqueuedElement() {
+        final RingBuffer<String> buffer = new RingBuffer<>(defaultCapacity);
+        buffer.offer("B");
+
+        final String cellData = buffer.poll();
+        assertEquals("B", cellData);
+    }
+
+    @Test
+    public void givenRingBuffer_whenAnElementIsEnqueuedAndDeququed_thenBufferIsEmpty() {
+        final RingBuffer<String> buffer = new RingBuffer<>(defaultCapacity);
+        buffer.offer("C");
+
+        assertFalse(buffer.isEmpty());
+        assertEquals(1, buffer.size());
+
+        buffer.poll();
+
+        assertTrue(buffer.isEmpty());
+    }
+
+    @Test
+    public void givenRingBuffer_whenFilledToCapacity_thenNoMoreElementsCanBeEnqueued() {
+        final int capacity = data.length;
+        final RingBuffer<String> buffer = new RingBuffer<>(capacity);
+
+        assertTrue(buffer.isEmpty());
+
+        for (final String shape : data) {
+            buffer.offer(shape);
+        }
+
+        assertTrue(buffer.isFull());
+        assertFalse(buffer.offer("Octagon"));
+    }
+
+    @Test
+    public void givenRingBuffer_whenBufferIsEmpty_thenReturnsNull() {
+        final RingBuffer<String> buffer = new RingBuffer<>(1);
+
+        assertTrue(buffer.isEmpty());
+        assertNull(buffer.poll());
+    }
+
+}
+```
+
+#### Collections
 
 
