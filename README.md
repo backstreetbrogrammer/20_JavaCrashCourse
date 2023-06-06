@@ -2017,4 +2017,36 @@ public class RingBufferTest {
 
 #### Collections
 
+Any group of individual objects which are represented as a single unit is known as a collection of objects.
+
+The "**Collection Framework**" has been defined in **JDK 1.2** which holds all the collection classes and interface in
+it.
+
+Collection interface (`java.util.Collection`) and Map interface (`java.util.Map`) are the two main "**root**"
+interfaces of Java collection classes.
+
+![Collection Framework Simpler](CollectionFrameworkSimpler.PNG)
+
+Looking more into the details of the classes being used in the API:
+
+![Collection Framework Complete](CollectionFrameworkComplete.PNG)
+
+#### Interview Problem 10 (Eclipse Trading): Implement a custom HashMap
+
+Design and implement a hash table which uses chaining (linked lists) to handle collisions.
+
+**Solution**
+
+Hash Table is a data structure used for storing key-value pairs for very fast lookup in O(1) time complexity.
+
+![Hash Table Simpler](HashTablesSimpler.PNG)
+
+We will implement a Hash Table by creating `DoublyLinkedList` **ARRAY** to store all items (key-value 
+pairs). For hash collisions, we will append the item to the linked list at the particular bucket or index.
+
+![Hash Table Chaining](HashTableChaining.PNG)
+
+
+
+
 
