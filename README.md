@@ -2031,7 +2031,7 @@ Looking more into the details of the classes being used in the API:
 
 ![Collection Framework Complete](CollectionFrameworkComplete.PNG)
 
-#### Interview Problem 10 (Eclipse Trading): Implement a custom HashMap
+#### Interview Problem 10 (Eclipse Trading): Implement a custom hash table
 
 Design and implement a hash table which uses chaining (linked lists) to handle collisions.
 
@@ -2041,12 +2041,265 @@ Hash Table is a data structure used for storing key-value pairs for very fast lo
 
 ![Hash Table Simpler](HashTablesSimpler.PNG)
 
-We will implement a Hash Table by creating `DoublyLinkedList` **ARRAY** to store all items (key-value 
-pairs). For hash collisions, we will append the item to the linked list at the particular bucket or index.
+We will implement a Hash Table by creating `DoublyLinkedList` **ARRAY** to store all items (key-value pairs). For hash
+collisions, we will append the item to the linked list at the particular bucket or index.
 
 ![Hash Table Chaining](HashTableChaining.PNG)
 
+**CustomHashTable** class:
 
+```java
+import java.util.ArrayList;
 
+public class CustomHashTable<K, V> {
 
+    // DoublyLinkedList node
+    private static class LinkedListNode<K, V> {
+        public LinkedListNode<K, V> next;
+        public LinkedListNode<K, V> prev;
+        public K key;
+        public V value;
+
+        public LinkedListNode(final K key, final V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+    private ArrayList<LinkedListNode<K, V>> array;
+
+    public CustomHashTable(final int capacity) {
+        if (capacity < 1) {
+            throw new IllegalArgumentException("capacity can not be less than 1");
+        }
+        array = new ArrayList<>();
+        for (int i = 0; i < capacity; i++) {
+            array.add(null);
+        }
+    }
+
+    /**
+     * Insert key-value pair into hash table.
+     *
+     * @param key
+     * @param value
+     */
+    public void put(final K key, final V value) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key must not be null");
+        }
+        if (value == null) {
+            throw new IllegalArgumentException("Value must not be null");
+        }
+        LinkedListNode<K, V> node = getNodeForKey(key);
+        if (node != null) { // already there
+            node.value = value; // just update the value
+            return;
+        }
+
+        node = new LinkedListNode<>(key, value);
+        int index = getIndexForKey(key);
+        if (array.get(index) != null) { // collision
+            final int n = getAvailableIndexAfterLinearProbing();
+            if (n == -1) { // no available index
+                node.next = array.get(index);
+                node.next.prev = node;
+            } else {
+                index = n;
+            }
+        }
+        array.set(index, node);
+    }
+
+    /**
+     * Get the value associated with the given key from hash table
+     *
+     * @param key
+     * @return
+     */
+    public V get(final K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key must not be null");
+        }
+
+        final LinkedListNode<K, V> node = getNodeForKey(key);
+        V value = null;
+        if (node == null) {
+            // may be indexed using linear probing - will always be head
+            for (final LinkedListNode<K, V> lln : array) {
+                if (lln != null && lln.key == key) {
+                    value = lln.value;
+                    break;
+                }
+            }
+        } else {
+            value = node.value;
+        }
+        return value;
+    }
+
+    /**
+     * Remove key-value pair associated with the given key from hash table
+     *
+     * @param key
+     */
+    public void remove(final K key) {
+        if (key == null) {
+            throw new IllegalArgumentException("Key must not be null");
+        }
+
+        final LinkedListNode<K, V> node = getNodeForKey(key);
+        if (node != null && node.prev != null) {
+            node.prev.next = node.next;
+        } else {
+            // Removing head - update
+            final int hashKey = getIndexForKey(key);
+            array.set(hashKey, node.next);
+        }
+
+        if (node.next != null) { // not a tail
+            node.next.prev = node.prev;
+        }
+    }
+
+    private int getAvailableIndexAfterLinearProbing() {
+        int idx = -1;
+        for (int i = 0; i < array.size(); i++) {
+            if (array.get(i) == null) {
+                idx = i;
+                break;
+            }
+        }
+        return idx;
+    }
+
+    // Get LinkedListNode associated with a given key
+    private LinkedListNode<K, V> getNodeForKey(final K key) {
+        final int index = getIndexForKey(key);
+        LinkedListNode<K, V> current = array.get(index);
+        while (current != null) { // collision
+            if (current.key == key) {
+                return current;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    private int getIndexForKey(final K key) {
+        // mask off the sign bit - turn 32-bit number into a 31-bit positive integer
+        return (key.hashCode() & 0x7fffffff) % array.size();
+    }
+}
+```
+
+**CustomHashTableTest** Unit test class:
+
+```java
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class CustomHashTableTest {
+
+    private CustomHashTable<String, Integer> hashTable;
+
+    @BeforeEach
+    void setUp() {
+        hashTable = new CustomHashTable<>(5);
+    }
+
+    @Test
+    @DisplayName("When the key is null, then throw exception for get()")
+    void whenKeyIsNull_thenThrowExceptionForGetMethod() {
+        final Throwable exception = assertThrows(IllegalArgumentException.class, () -> hashTable.get(null));
+        assertEquals(exception.getMessage(), "Key must not be null");
+    }
+
+    @Test
+    @DisplayName("When the key is null, then throw exception for put()")
+    void whenKeyIsNull_thenThrowExceptionForPutMethod() {
+        final Throwable exception = assertThrows(IllegalArgumentException.class, () -> hashTable.put(null, 5));
+        assertEquals(exception.getMessage(), "Key must not be null");
+    }
+
+    @Test
+    @DisplayName("When the key is null, then throw exception for remove()")
+    void whenKeyIsNull_thenThrowExceptionForRemoveMethod() {
+        final Throwable exception = assertThrows(IllegalArgumentException.class, () -> hashTable.remove(null));
+        assertEquals(exception.getMessage(), "Key must not be null");
+    }
+
+    @Test
+    @DisplayName("When the Value is null, then throw exception for put()")
+    void whenValueIsNull_thenThrowExceptionForPutMethod() {
+        final Throwable exception = assertThrows(IllegalArgumentException.class, () -> hashTable.put("Rishi", null));
+        assertEquals(exception.getMessage(), "Value must not be null");
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"Rishi", "John", "Bob", "Malcolm", "Joshua"})
+    @DisplayName("Test put() and get() methods with one input at a time")
+    void testPutAndGetMethodsWithOneInputAtATime(String input) {
+        hashTable.put(input, input.length());
+        int value = hashTable.get(input);
+        assertEquals(input.length(), value);
+    }
+
+    @Test
+    @DisplayName("Test put() and get() methods with multiple inputs")
+    void testPutAndGetMethodsWithMultipleInputs() {
+        final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua"};
+        for (String input : inputs) {
+            hashTable.put(input, input.length());
+            int value = hashTable.get(input);
+            assertEquals(input.length(), value);
+        }
+    }
+
+    @Test
+    @DisplayName("Test put() and remove() methods with multiple inputs")
+    void testPutAndRemoveMethodsWithMultipleInputs() {
+        final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
+        for (String input : inputs) {
+            hashTable.put(input, input.length());
+            int value = hashTable.get(input);
+            assertEquals(input.length(), value);
+        }
+        hashTable.remove("Bob");
+        assertNull(hashTable.get("Bob"));
+    }
+
+    @Test
+    @DisplayName("Test remove() method from head in collided index")
+    void testRemoveMethodFromHead() {
+        final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
+        for (String input : inputs) {
+            hashTable.put(input, input.length());
+            int value = hashTable.get(input);
+            assertEquals(input.length(), value);
+        }
+        hashTable.remove("Christy");
+        assertNull(hashTable.get("Christy"));
+    }
+
+    @Test
+    @DisplayName("Test remove() method from tail in collided index")
+    void testRemoveMethodFromTail() {
+        final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
+        for (String input : inputs) {
+            hashTable.put(input, input.length());
+            int value = hashTable.get(input);
+            assertEquals(input.length(), value);
+        }
+        hashTable.remove("Bob");
+        assertNull(hashTable.get("Bob"));
+    }
+
+}
+```
 
