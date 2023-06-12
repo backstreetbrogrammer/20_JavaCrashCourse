@@ -22,23 +22,41 @@ Learning programming is like learning car driving or swimming:
 - test the code
 - refactor / improve the code
 
-Bottom line is do as much hands-on coding as possible and try to BUILD something.
+**Bottom line**: do as much hands-on coding as possible and try to BUILD something.
 
 ### How to find resources
 
-1. **Books**: go an amazon site and search for a topic - say "python for machine learning". It will list down all the
-   best books with the highest ratings and customer feedbacks. Chose the best book.
+1. **Books**: go an amazon site and search for a topic - say "Clean Code". It will list down all the best books with the
+   highest ratings and customer feedbacks. Chose the best book.
 2. **Online free videos**: similarly search for the topic on Google -> search for videos -> it will give the highest
    viewed videos.
-3. **Paid courses**: various sites are available like **Udemy, Coursera, edX, Lynda, Pluralsight,** etc.
-4. **Articles**: there are many good articles available like **Baeldung, Medium, GeeksForGeeks, Edureka,** etc.
+3. **Paid courses**: various sites are available like **Udemy**, **Coursera**, **edX**, **Lynda**, **Pluralsight**, etc.
+4. **Articles**: there are many good articles available like **Baeldung**, **Medium**, **Quora**, **GeeksForGeeks**, **
+   Edureka**, etc.
 
 Alternatively, go to **ChatGPT** and search for best resources available for learning a topic. :)
 
-### How to stay abreast of the latest tech trends
+In the real job, almost all the developers use **StackOverflow** a lot.
+
+### How to stay abreast of the latest technology trends
+
+This is a common myth while working in a bank.
+
+To upgrade to a new version of Java or embrace any new technology, say Kotlin - it requires cost or budget approvals.
+
+In the banks, if a project requires efforts without bringing any significant value to the finance or trading is not
+worth.
+
+Only once a technology becomes very outdated and almost out of license (for support) - then we need to upgrade to a
+newer version. Same goes with using a new technology.
+
+Nevertheless, for personal interest - if one needs to stay abreast with the latest technology trends, we will suggest
+joining events and conferences like: **YOW**, **Eventbrite**, **Java Conferences**, **Oracle and IBM conferences**, etc.
 
 ### How to prepare for interviews
 
+
+
 ### What it is like working at the banks
 
-### The read truth behind the interview process and hiring in banks
+### The real truth behind the interview process and hiring in banks
