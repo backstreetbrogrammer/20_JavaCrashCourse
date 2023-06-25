@@ -1408,9 +1408,342 @@ As this checking happens at runtime, method overriding is a typical example of d
 #### Interview Problem 8 (Goldman Sachs): Design deck of cards and implement BlackJack
 
 Design the data structures for a generic deck of cards. Explain how you would subclass the data structures to implement
-BlackJack.
+BlackJack. (use inheritance)
 
-**Solution**:
+**Follow up**: Design the same class using **Composition**
+
+**Solution 1**:
+
+**USING INHERITANCE**
+
+First, we'll create a `Card` class to represent a playing card:
+
+```java
+public class Card {
+    private final String suit;
+    private final String rank;
+    private final int value;
+
+    public Card(final String suit, final String rank, final int value) {
+        this.suit = suit;
+        this.rank = rank;
+        this.value = value;
+    }
+
+    public String getSuit() {
+        return suit;
+    }
+
+    public String getRank() {
+        return rank;
+    }
+
+    public int getValue() {
+        return value;
+    }
+}
+```
+
+Next, we'll create a `Deck` class to represent a deck of playing cards:
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class Deck {
+    private final List<Card> cards;
+
+    public Deck() {
+        cards = new ArrayList<>();
+        final String[] suits = {"Hearts", "Diamonds", "Clubs", "Spades"};
+        final String[] ranks = {"Ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King"};
+
+        for (final String suit : suits) {
+            for (int i = 0; i < ranks.length; i++) {
+                int value = i + 1;
+
+                if (ranks[i].equals("Ace")) {
+                    value = 11;
+                } else if (i >= 9) {
+                    value = 10;
+                }
+
+                final Card card = new Card(suit, ranks[i], value);
+                cards.add(card);
+            }
+        }
+
+        Collections.shuffle(cards);
+    }
+
+    public Card dealCard() {
+        return cards.remove(0);
+    }
+
+}
+```
+
+Now, we'll create a `Hand` class to represent a player's hand:
+
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class Hand {
+    private final List<Card> cards;
+
+    public Hand() {
+        cards = new ArrayList<>();
+    }
+
+    public void addCard(final Card card) {
+        cards.add(card);
+    }
+
+    public int getValue() {
+        int value = 0;
+        int numAces = 0;
+
+        for (final Card card : cards) {
+            value += card.getValue();
+
+            if (card.getRank().equals("Ace")) {
+                numAces++;
+            }
+        }
+
+        while (value > 21 && numAces > 0) {
+            value -= 10;
+            numAces--;
+        }
+
+        return value;
+    }
+
+    public List<Card> getCards() {
+        return cards;
+    }
+}
+```
+
+Finally, we'll create a `Player` class and a `Dealer` class that inherit from a `Participant` class:
+
+```java
+public abstract class Participant {
+    private final Hand hand;
+
+    public Participant() {
+        hand = new Hand();
+    }
+
+    public Hand getHand() {
+        return hand;
+    }
+
+    public void addCardToHand(final Card card) {
+        hand.addCard(card);
+    }
+
+    public int getHandValue() {
+        return hand.getValue();
+    }
+}
+```
+
+```java
+public class Player extends Participant {
+    private int chips;
+
+    public Player(final int chips) {
+        super();
+        this.chips = chips;
+    }
+
+    public int getChips() {
+        return chips;
+    }
+
+    public void setChips(final int chips) {
+        this.chips = chips;
+    }
+}
+```
+
+```java
+public class Dealer extends Participant {
+    public Dealer() {
+        super();
+    }
+
+    public Card getUpCard() {
+        return getHand().getCards().get(1);
+    }
+}
+```
+
+Now we can use these classes to create a `BlackjackGame` class:
+
+```java
+import java.util.Scanner;
+
+public class BlackjackGame {
+
+    private final Deck deck;
+    private final Player player;
+    private final Dealer dealer;
+
+    public BlackjackGame(final int startingChips) {
+        deck = new Deck();
+        player = new Player(startingChips);
+        dealer = new Dealer();
+    }
+
+    public void play() {
+        final Scanner scanner = new Scanner(System.in);
+
+        while (player.getChips() > 0) {
+            System.out.println("You have " + player.getChips() + " chips.");
+
+            System.out.print("How much would you like to bet? ");
+            final int bet = scanner.nextInt();
+
+            if (bet > player.getChips()) {
+                System.out.println("You don't have enough chips to make that bet.");
+                continue;
+            }
+
+            player.setChips(player.getChips() - bet);
+
+            player.getHand().addCard(deck.dealCard());
+            dealer.getHand().addCard(deck.dealCard());
+            player.getHand().addCard(deck.dealCard());
+            dealer.getHand().addCard(deck.dealCard());
+
+            System.out.println("Dealer's up card: " + dealer.getUpCard().getRank() + " of " + dealer.getUpCard().getSuit());
+            System.out.println("Your hand: " + player.getHand().getCards().get(0).getRank() + " of " + player.getHand().getCards().get(0).getSuit() + " and " + player.getHand().getCards().get(1).getRank() + " of " + player.getHand().getCards().get(1).getSuit());
+            System.out.println("Your hand value: " + player.getHandValue());
+
+            boolean playerBust = false;
+            boolean dealerBust = false;
+
+            // Player's turn
+            while (true) {
+                System.out.print("Do you want to hit or stand? ");
+                final String choice = scanner.next().toLowerCase();
+
+                if (choice.equals("hit")) {
+                    final Card card = deck.dealCard();
+                    player.getHand().addCard(card);
+                    System.out.println("You drew the " + card.getRank() + " of " + card.getSuit());
+                    System.out.println("Your hand value: " + player.getHandValue());
+
+                    if (player.getHandValue() > 21) {
+                        System.out.println("You busted!");
+                        playerBust = true;
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+            // Dealer's turn
+            if (!playerBust) {
+                System.out.println("Dealer's hand: " + dealer.getHand().getCards().get(0).getRank() + " of " + dealer.getHand().getCards().get(0).getSuit() + " and " + dealer.getHand().getCards().get(1).getRank() + " of " + dealer.getHand().getCards().get(1).getSuit());
+                System.out.println("Dealer's hand value: " + dealer.getHandValue());
+
+                while (dealer.getHandValue() < 17) {
+                    final Card card = deck.dealCard();
+                    dealer.getHand().addCard(card);
+                    System.out.println("Dealer drew the " + card.getRank() + " of " + card.getSuit());
+                    System.out.println("Dealer's hand value: " + dealer.getHandValue());
+
+                    if (dealer.getHandValue() > 21) {
+                        System.out.println("Dealer busted!");
+                        dealerBust = true;
+                        break;
+                    }
+                }
+            }
+
+            // Determine winner
+            if (playerBust) {
+                System.out.println("You lose!");
+            } else if (dealerBust) {
+                System.out.println("You win!");
+                player.setChips(player.getChips() + (bet * 2));
+            } else if (player.getHandValue() > dealer.getHandValue()) {
+                System.out.println("You win!");
+                player.setChips(player.getChips() + (bet * 2));
+            } else if (player.getHandValue() < dealer.getHandValue()) {
+                System.out.println("You lose!");
+            } else {
+                System.out.println("Push!");
+                player.setChips(player.getChips() + bet);
+            }
+
+            // Reset hands
+            player.getHand().getCards().clear();
+            dealer.getHand().getCards().clear();
+        }
+
+        System.out.println("You're out of chips. Game over!");
+    }
+
+    public static void main(final String[] args) {
+        final BlackjackGame game = new BlackjackGame(100);
+        game.play();
+    }
+}
+```
+
+Running the code with `main()` as:
+
+```
+    public static void main(final String[] args) {
+        final BlackjackGame game = new BlackjackGame(100);
+        game.play();
+    }
+```
+
+Sample output:
+
+```
+You have 100 chips.
+How much would you like to bet? 10
+Dealer's up card: 8 of Diamonds
+Your hand: Jack of Clubs and 7 of Hearts
+Your hand value: 17
+Do you want to hit or stand? stand
+Dealer's hand: 6 of Clubs and 8 of Diamonds
+Dealer's hand value: 14
+Dealer drew the 8 of Spades
+Dealer's hand value: 22
+Dealer busted!
+You win!
+You have 110 chips.
+How much would you like to bet? 20
+Dealer's up card: Queen of Diamonds
+Your hand: 5 of Hearts and King of Hearts
+Your hand value: 15
+Do you want to hit or stand? stand
+Dealer's hand: 5 of Spades and Queen of Diamonds
+Dealer's hand value: 15
+Dealer drew the Queen of Spades
+Dealer's hand value: 25
+Dealer busted!
+You win!
+You have 130 chips.
+How much would you like to bet? 
+```
+
+---
+
+
+**Solution 2**:
+
+**USING COMPOSITION**
 
 First create **enum** for `Suit` and `Rank`:
 
@@ -2244,9 +2577,9 @@ public class CustomHashTableTest {
     @ParameterizedTest
     @ValueSource(strings = {"Rishi", "John", "Bob", "Malcolm", "Joshua"})
     @DisplayName("Test put() and get() methods with one input at a time")
-    void testPutAndGetMethodsWithOneInputAtATime(String input) {
+    void testPutAndGetMethodsWithOneInputAtATime(final String input) {
         hashTable.put(input, input.length());
-        int value = hashTable.get(input);
+        final int value = hashTable.get(input);
         assertEquals(input.length(), value);
     }
 
@@ -2254,9 +2587,9 @@ public class CustomHashTableTest {
     @DisplayName("Test put() and get() methods with multiple inputs")
     void testPutAndGetMethodsWithMultipleInputs() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
     }
@@ -2265,9 +2598,9 @@ public class CustomHashTableTest {
     @DisplayName("Test put() and remove() methods with multiple inputs")
     void testPutAndRemoveMethodsWithMultipleInputs() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
         hashTable.remove("Bob");
@@ -2278,9 +2611,9 @@ public class CustomHashTableTest {
     @DisplayName("Test remove() method from head in collided index")
     void testRemoveMethodFromHead() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
         hashTable.remove("Christy");
@@ -2291,9 +2624,9 @@ public class CustomHashTableTest {
     @DisplayName("Test remove() method from tail in collided index")
     void testRemoveMethodFromTail() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
         hashTable.remove("Bob");

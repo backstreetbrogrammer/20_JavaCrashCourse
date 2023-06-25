@@ -48,9 +48,9 @@ public class CustomHashTableTest {
     @ParameterizedTest
     @ValueSource(strings = {"Rishi", "John", "Bob", "Malcolm", "Joshua"})
     @DisplayName("Test put() and get() methods with one input at a time")
-    void testPutAndGetMethodsWithOneInputAtATime(String input) {
+    void testPutAndGetMethodsWithOneInputAtATime(final String input) {
         hashTable.put(input, input.length());
-        int value = hashTable.get(input);
+        final int value = hashTable.get(input);
         assertEquals(input.length(), value);
     }
 
@@ -58,9 +58,9 @@ public class CustomHashTableTest {
     @DisplayName("Test put() and get() methods with multiple inputs")
     void testPutAndGetMethodsWithMultipleInputs() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
     }
@@ -69,9 +69,9 @@ public class CustomHashTableTest {
     @DisplayName("Test put() and remove() methods with multiple inputs")
     void testPutAndRemoveMethodsWithMultipleInputs() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
         hashTable.remove("Bob");
@@ -82,9 +82,9 @@ public class CustomHashTableTest {
     @DisplayName("Test remove() method from head in collided index")
     void testRemoveMethodFromHead() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
         hashTable.remove("Christy");
@@ -95,9 +95,9 @@ public class CustomHashTableTest {
     @DisplayName("Test remove() method from tail in collided index")
     void testRemoveMethodFromTail() {
         final String[] inputs = new String[]{"Rishi", "John", "Bob", "Malcolm", "Joshua", "Christy"};
-        for (String input : inputs) {
+        for (final String input : inputs) {
             hashTable.put(input, input.length());
-            int value = hashTable.get(input);
+            final int value = hashTable.get(input);
             assertEquals(input.length(), value);
         }
         hashTable.remove("Bob");
